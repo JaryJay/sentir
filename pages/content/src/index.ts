@@ -1,4 +1,4 @@
-import { applyOverlayToAllInputFields } from '@src/sampleFunction'
+import { applyOverlayToAllInputFields } from '@src/applyOverlay'
 
 console.log('content script loaded')
 

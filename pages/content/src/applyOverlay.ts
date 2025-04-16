@@ -139,8 +139,8 @@ function createWrapper(inputStyle: CSSStyleDeclaration): HTMLDivElement {
  */
 function modifyInput(input: HTMLInputElement | HTMLTextAreaElement) {
 	Object.assign(input.style, {
-		color: 'rgba(0, 0, 0, 0.1)',
-		caretColor: 'rgba(0, 0, 0, 1)',
+		width: '100%',
+		height: '100%',
 	})
 	// Mark the input as having an overlay
 	input.classList.add(MARKED_INPUT_CLASS)
@@ -160,14 +160,11 @@ function createOverlay(inputStyle: CSSStyleDeclaration): HTMLDivElement {
 		left: '0',
 		width: '100%',
 		height: '100%',
-		backgroundColor: 'rgba(0, 255, 255, 0.1)',
+		backgroundColor: 'transparent',
+		color: 'rgba(0, 0, 0, 0.5)',
 		pointerEvents: 'none',
 		// But we make it transparent so it doesn't show
 		borderColor: 'transparent',
-		color: 'green',
-		textEmphasis: 'green',
-		webkitTextFillColor: 'green',
-		webkitTextStrokeColor: 'green',
 		opacity: 1,
 		whiteSpace: 'pre-wrap',
 	})

@@ -1,3 +1,5 @@
+import { debounce } from 'lodash'
+import { getCompletion } from './prompt'
 import { isElementVisible, assignCSSStyleDeclaration } from './utils'
 
 const INPUT_WRAPPER_CLASS = 'delect-extension-input-wrapper'
@@ -177,11 +179,33 @@ function createOverlay(inputStyle: CSSStyleDeclaration): HTMLDivElement {
  * Sets up event listeners for the input and overlay
  */
 function setupEventListeners(input: HTMLInputElement | HTMLTextAreaElement, overlay: HTMLDivElement) {
+	let currentCompletion = {
+		completion: '',
+		timestamp: 0,
+	}
 	// Update overlay text when input value changes
 	input.addEventListener('input', () => {
-		console.log(`input.value: '${input.value}'`)
-		overlay.textContent = input.value + ' suggestion'
+		overlay.textContent = input.value
 	})
+	input.addEventListener(
+		'input',
+		debounce(() => {
+			getCompletion({
+				inputText: input.value,
+				url: window.location.href,
+				cursorPosition: input.selectionStart ?? 0,
+				surroundingText: [],
+				placeholder: input.placeholder,
+				label: input.labels?.[0]?.textContent ?? undefined,
+			}).then(completion => {
+				console.log(`completion: '${completion.completion}'`)
+				if (completion.timestamp > currentCompletion.timestamp) {
+					currentCompletion = completion
+					overlay.textContent = completion.completion
+				}
+			})
+		}, 400),
+	)
 
 	// Handle Tab key to accept suggestion
 	input.addEventListener('keydown', (event: Event) => {

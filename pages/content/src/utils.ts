@@ -1,12 +1,12 @@
 export function isElementVisible(element: HTMLElement): boolean {
-  const style = window.getComputedStyle(element)
-  return (
-    style.display !== 'none' &&
-    style.visibility !== 'hidden' &&
-    style.opacity !== '0' &&
-    element.offsetWidth > 0 &&
-    element.offsetHeight > 0
-  )
+	const style = window.getComputedStyle(element)
+	return (
+		style.display !== 'none' &&
+		style.visibility !== 'hidden' &&
+		style.opacity !== '0' &&
+		element.offsetWidth > 0 &&
+		element.offsetHeight > 0
+	)
 }
 
 /**
@@ -16,8 +16,8 @@ export function isElementVisible(element: HTMLElement): boolean {
  * @param source - The source CSSStyleDeclaration object.
  */
 export function assignCSSStyleDeclaration(target: CSSStyleDeclaration, source: CSSStyleDeclaration) {
-  for (let i = 0; i < source.length; i++) {
-    const propertyName = source[i]
-    target.setProperty(propertyName, source.getPropertyValue(propertyName), source.getPropertyPriority(propertyName))
-  }
+	for (let i = 0; i < source.length; i++) {
+		const propertyName = source[i]
+		target.setProperty(propertyName, source.getPropertyValue(propertyName), source.getPropertyPriority(propertyName))
+	}
 }

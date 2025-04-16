@@ -108,9 +108,9 @@ function applyOverlay(input: HTMLInputElement | HTMLTextAreaElement) {
 	input.parentNode?.insertBefore(wrapper, input)
 	wrapper.appendChild(input)
 
-	modifyInput(input)
-
 	const overlay = createOverlay(inputStyle)
+
+	modifyInput(input)
 
 	setupEventListeners(input, overlay)
 

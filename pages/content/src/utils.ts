@@ -1,3 +1,14 @@
+export function isElementVisible(element: HTMLElement): boolean {
+  const style = window.getComputedStyle(element)
+  return (
+    style.display !== 'none' &&
+    style.visibility !== 'hidden' &&
+    style.opacity !== '0' &&
+    element.offsetWidth > 0 &&
+    element.offsetHeight > 0
+  )
+}
+
 /**
  * This function is like Object.assign, but for CSSStyleDeclaration objects.
  * It copies all the properties from the source to the target.

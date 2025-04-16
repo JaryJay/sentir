@@ -190,6 +190,9 @@ function setupEventListeners(input: HTMLInputElement | HTMLTextAreaElement, over
 	input.addEventListener(
 		'input',
 		debounce(() => {
+			if (input.value.length === 0) {
+				return
+			}
 			getCompletion({
 				inputText: input.value,
 				url: window.location.href,

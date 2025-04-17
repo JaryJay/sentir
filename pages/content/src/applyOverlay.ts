@@ -101,14 +101,16 @@ function applyOverlay(input: HTMLInputElement | HTMLTextAreaElement) {
 		return
 	}
 
-	const inputStyle = window.getComputedStyle(input)
+	const inputStyle = input.style
+	const inputComputedStyle = window.getComputedStyle(input)
 
-	const wrapper = createWrapper(inputStyle)
+	const wrapper = createWrapper(inputStyle, inputComputedStyle)
 
 	input.parentNode?.insertBefore(wrapper, input)
 	wrapper.appendChild(input)
 
-	const overlay = createOverlay(inputStyle)
+	const overlay = createOverlay()
+	assignOverlayStyle(overlay, inputStyle, inputComputedStyle)
 
 	modifyInput(input)
 
@@ -120,7 +122,7 @@ function applyOverlay(input: HTMLInputElement | HTMLTextAreaElement) {
 /**
  * Creates and styles the wrapper element
  */
-function createWrapper(inputStyle: CSSStyleDeclaration): HTMLDivElement {
+function createWrapper(inputStyle: CSSStyleDeclaration, inputComputedStyle: CSSStyleDeclaration): HTMLDivElement {
 	const wrapper = document.createElement('div')
 	wrapper.classList.add(INPUT_WRAPPER_CLASS)
 	Object.assign(wrapper.style, {
@@ -130,7 +132,9 @@ function createWrapper(inputStyle: CSSStyleDeclaration): HTMLDivElement {
 		flexGrow: inputStyle.flexGrow,
 		flexShrink: inputStyle.flexShrink,
 		flexWrap: inputStyle.flexWrap,
-	})
+		width: inputStyle.width || inputComputedStyle.width || '100%',
+		height: inputStyle.height || inputComputedStyle.height || '100%',
+	} as Partial<CSSStyleDeclaration>)
 	return wrapper
 }
 
@@ -141,7 +145,7 @@ function modifyInput(input: HTMLInputElement | HTMLTextAreaElement) {
 	Object.assign(input.style, {
 		width: '100%',
 		height: '100%',
-	})
+	} as Partial<CSSStyleDeclaration>)
 	// Mark the input as having an overlay
 	input.classList.add(MARKED_INPUT_CLASS)
 }
@@ -149,27 +153,42 @@ function modifyInput(input: HTMLInputElement | HTMLTextAreaElement) {
 /**
  * Creates and styles the overlay element
  */
-function createOverlay(inputStyle: CSSStyleDeclaration): HTMLDivElement {
+function createOverlay(): HTMLDivElement {
 	const overlay = document.createElement('div')
-	overlay.classList.add(OVERLAY_CLASS) // For potential styling
+	overlay.classList.add(OVERLAY_CLASS)
+	// Overlay should not affect screenreaders
+	overlay.ariaHidden = 'true'
 
+	return overlay
+}
+
+function assignOverlayStyle(
+	overlay: HTMLDivElement,
+	inputStyle: CSSStyleDeclaration,
+	inputComputedStyle: CSSStyleDeclaration,
+) {
+	const overlayTextColor = inputComputedStyle.color.replace(/^rgb\((.+)\)$/, 'rgba($1, 0.5)')
 	assignCSSStyleDeclaration(overlay.style, inputStyle)
 	Object.assign(overlay.style, {
+		overflow: inputStyle.overflow || inputComputedStyle.overflow,
+		padding: inputStyle.padding || inputComputedStyle.padding,
+		margin: inputStyle.margin || inputComputedStyle.margin,
+		border: inputStyle.border || inputComputedStyle.border,
+		textAlign: inputStyle.textAlign || inputComputedStyle.textAlign,
+		fontSize: inputStyle.fontSize || inputComputedStyle.fontSize,
+		fontFamily: inputStyle.fontFamily || inputComputedStyle.fontFamily,
+		lineHeight: inputStyle.lineHeight || inputComputedStyle.lineHeight,
+		borderColor: 'transparent',
 		position: 'absolute',
 		top: '0',
 		left: '0',
 		width: '100%',
 		height: '100%',
-		backgroundColor: 'transparent',
-		color: 'rgba(0, 0, 0, 0.5)',
+		backgroundColor: 'rgb(0, 255, 255, 0.05)',
+		color: overlayTextColor,
 		pointerEvents: 'none',
-		// But we make it transparent so it doesn't show
-		borderColor: 'transparent',
-		opacity: 1,
 		whiteSpace: 'pre-wrap',
-	})
-
-	return overlay
+	} as Partial<CSSStyleDeclaration>)
 }
 
 /**

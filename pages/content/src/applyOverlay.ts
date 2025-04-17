@@ -40,6 +40,8 @@ function applyOverlaysToExistingInputs() {
 function setupVisibilityObserver() {
 	// Create a map to track visibility state of elements
 	const visibilityMap = new Map<HTMLElement, boolean>()
+	// Create a map to track class changes
+	const classMap = new Map<HTMLElement, string>()
 
 	// Function to check visibility changes
 	function updateOverlaysBasedOnVisibility() {
@@ -49,20 +51,33 @@ function setupVisibilityObserver() {
 			const htmlElement = element as HTMLElement
 			const wasVisible = visibilityMap.get(htmlElement) ?? false
 			const isVisible = isElementVisible(htmlElement)
+			// Update visibility state
+			visibilityMap.set(htmlElement, isVisible)
+
+			if (!isVisible) return
 
 			// If element became visible and doesn't have an overlay yet
-			if (isVisible && !wasVisible && !htmlElement.classList.contains(MARKED_INPUT_CLASS)) {
+			if (!wasVisible && !htmlElement.classList.contains(MARKED_INPUT_CLASS)) {
 				applyOverlay(element as HTMLInputElement | HTMLTextAreaElement)
 			}
 
-			// Update visibility state
-			visibilityMap.set(htmlElement, isVisible)
+			// If element was already visible, check if classes have changed. If so, update the overlay
+			if (wasVisible && isVisible) {
+				const currentClasses = htmlElement.className
+				const previousClasses = classMap.get(htmlElement)
+
+				if (currentClasses !== previousClasses) {
+					classMap.set(htmlElement, currentClasses)
+					updateOverlay(element as HTMLInputElement | HTMLTextAreaElement)
+				}
+			}
 		})
 	}
 
-	// Set up a visibility observer
+	const debouncedUpdate = debounce(updateOverlaysBasedOnVisibility, 100)
+	// Set up a visibility observer with debounced updates
 	const visibilityObserver = new MutationObserver(() => {
-		updateOverlaysBasedOnVisibility()
+		debouncedUpdate()
 	})
 
 	// Observe style changes that might affect visibility
@@ -117,6 +132,25 @@ function applyOverlay(input: HTMLInputElement | HTMLTextAreaElement) {
 	setupEventListeners(input, overlay)
 
 	wrapper.appendChild(overlay)
+}
+
+function updateOverlay(input: HTMLInputElement | HTMLTextAreaElement) {
+	const wrapper = input.parentElement
+	if (!wrapper || !wrapper.classList.contains(INPUT_WRAPPER_CLASS)) {
+		console.error('updateOverlay: no wrapper found')
+		return
+	}
+
+	const overlay = wrapper.querySelector<HTMLDivElement>(`.${OVERLAY_CLASS}`)
+	if (!overlay) {
+		console.error('updateOverlay: no overlay found')
+		return
+	}
+
+	const inputStyle = input.style
+	const inputComputedStyle = window.getComputedStyle(input)
+
+	assignOverlayStyle(overlay, inputStyle, inputComputedStyle)
 }
 
 /**

@@ -1,4 +1,4 @@
-:: You only need to run this file once
+# You only need to run this file once
 
 cd ./sentir-common
 bun install

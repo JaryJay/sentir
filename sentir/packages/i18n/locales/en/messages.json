@@ -1,0 +1,30 @@
+{
+  "extensionDescription": {
+    "description": "Sentir",
+    "message": "Cursor-like autocompletion for every web page."
+  },
+  "extensionName": {
+    "description": "Sentir",
+    "message": "AI Autocompletion Extension"
+  },
+  "toggleTheme": {
+    "message": "Toggle theme"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "greeting": {
+    "description": "Greeting message",
+    "message": "Hello, My name is $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "John Doe"
+      }
+    }
+  },
+  "hello": {
+    "description": "Placeholder example",
+    "message": "Hello $1"
+  }
+}

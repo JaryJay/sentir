@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "../sentir"
+    },
+    {
+      "path": "../sentir-common"
+    }
+  ],
+  "settings": {}
+}

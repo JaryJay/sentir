@@ -1,0 +1,17 @@
+{
+  "name": "sentir-common",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

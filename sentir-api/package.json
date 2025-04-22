@@ -1,0 +1,19 @@
+{
+  "name": "sentir-api",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run index.ts"
+  },
+  "dependencies": {
+    "zod": "^3.24.3",
+    "sentir-common": "link:sentir-common"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

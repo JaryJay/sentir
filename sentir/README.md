@@ -60,8 +60,7 @@ Then, depending on the target browser:
 ### For Chrome: <a name="getting-started-chrome"></a>
 
 1. Run:
-    - Dev: `pnpm dev` (on Windows, you should run as administrator;
-      see [issue#456](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/issues/456))
+    - Dev: `pnpm dev`
     - Prod: `pnpm build`
 2. Open in browser - `chrome://extensions`
 3. Check - <kbd>Developer mode</kbd>

@@ -1,12 +1,12 @@
 {
-  "name": "delect",
+  "name": "sentir",
   "version": "0.0.1",
   "description": "Cursor-like autocompletion for every web page.",
   "private": true,
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/JaryJay/delect.git"
+    "url": "https://github.com/JaryJay/sentir.git"
   },
   "type": "module",
   "scripts": {

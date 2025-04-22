@@ -1,4 +1,4 @@
-# Delect
+# Sentir
 Cursor-like autocompletion for every web page.
 
 ## Table of Contents

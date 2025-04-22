@@ -2,9 +2,9 @@ import { debounce } from 'lodash'
 import { getCompletion } from './prompt'
 import { isElementVisible, assignCSSStyleDeclaration } from './utils'
 
-const INPUT_WRAPPER_CLASS = 'delect-extension-input-wrapper'
-const MARKED_INPUT_CLASS = 'delect-extension-marked-input'
-const OVERLAY_CLASS = 'delect-extension-overlay'
+const INPUT_WRAPPER_CLASS = 'sentir-extension-input-wrapper'
+const MARKED_INPUT_CLASS = 'sentir-extension-marked-input'
+const OVERLAY_CLASS = 'sentir-extension-overlay'
 
 /**
  * Creates an overlay for all input fields.
@@ -102,9 +102,9 @@ function setupVisibilityObserver() {
  *
  * After:
  * ```html
- * <div class="delect-extension-input-wrapper">
- *   <input class="delect-extension-marked-input">
- *   <div class="delect-extension-overlay">...</div>
+ * <div class="sentir-extension-input-wrapper">
+ *   <input class="sentir-extension-marked-input">
+ *   <div class="sentir-extension-overlay">...</div>
  * </div>
  * ```
  */

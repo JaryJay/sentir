@@ -34,7 +34,11 @@
     "copy_env": "bash bash-scripts/copy_env.sh",
     "set-global-env": "bash bash-scripts/set_global_env.sh",
     "postinstall": "pnpm build:eslint && pnpm copy_env",
-    "module-manager": "pnpm -F module-manager start"
+    "module-manager": "pnpm -F module-manager start",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:clean": "rimraf coverage"
   },
   "dependencies": {
     "react": "19.0.0",
@@ -68,6 +72,8 @@
     "eslint-plugin-tailwindcss": "^3.17.5",
     "fast-glob": "^3.3.3",
     "globals": "^15.14.0",
+    "jest": "^29.0.0",
+    "react-testing-library": "^13.0.0",
     "lint-staged": "^15.2.7",
     "postcss": "^8.5.2",
     "postcss-load-config": "^6.0.1",

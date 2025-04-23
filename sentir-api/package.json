@@ -7,6 +7,7 @@
     "dev": "bun --hot index.ts"
   },
   "dependencies": {
+    "@google/genai": "^0.9.0",
     "node-file-router": "^0.8.0",
     "sentir-common": "link:sentir-common",
     "zod": "^3.24.3"

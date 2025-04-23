@@ -4,6 +4,7 @@
     "": {
       "name": "sentir-api",
       "dependencies": {
+        "node-file-router": "^0.8.0",
         "sentir-common": "link:sentir-common",
         "zod": "^3.24.3",
       },
@@ -21,6 +22,8 @@
     "@types/node": ["@types/node@22.14.1", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-u0HuPQwe/dHrItgHHpmw3N2fYCR6x4ivMNbPHRkBVP4CvN+kiRrKHWk3i8tXiO/joPwXLMYvF9TTF0eqgHIuOw=="],
 
     "bun-types": ["bun-types@1.2.10", "", { "dependencies": { "@types/node": "*" } }, "sha512-b5ITZMnVdf3m1gMvJHG+gIfeJHiQPJak0f7925Hxu6ZN5VKA8AGy4GZ4lM+Xkn6jtWxg5S3ldWvfmXdvnkp3GQ=="],
+
+    "node-file-router": ["node-file-router@0.8.0", "", {}, "sha512-Kh4Inn3qE3EqLxvQqXAykVcObyXkKfJu0x0D+x05yolgons/huoTRmllulcP7qK6eW8HAd2ajQuhWgCSusPpDQ=="],
 
     "sentir-common": ["sentir-common@link:sentir-common", {}],
 

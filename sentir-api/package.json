@@ -4,11 +4,12 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run index.ts"
+    "dev": "bun --hot index.ts"
   },
   "dependencies": {
-    "zod": "^3.24.3",
-    "sentir-common": "link:sentir-common"
+    "node-file-router": "^0.8.0",
+    "sentir-common": "link:sentir-common",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/bun": "latest"

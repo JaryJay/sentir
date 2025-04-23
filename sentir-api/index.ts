@@ -12,9 +12,7 @@ const server = Bun.serve({
   port: 3000,
   fetch: async (req) => {
     const res = await useFileRouter<Response>(req);
-    console.log("Request", req.method, req.url, res);
-
-    return res || new Response("No Response is provided", { status: 500 });
+    return res ?? new Response("No Response is provided", { status: 500 });
   },
 });
 

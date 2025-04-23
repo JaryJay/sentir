@@ -1,9 +1,20 @@
-import { complete } from "./src/api/v0/complete";
+import { initFileRouter } from "node-file-router";
+
+// See https://node-file-router.js.org/ for docs
+const useFileRouter = await initFileRouter({
+  baseDir: "src/api",
+  onInit({ routes }) {
+    console.dir(routes, { depth: null });
+  },
+});
 
 const server = Bun.serve({
   port: 3000,
-  routes: {
-    "/api/v0/complete": complete,
+  fetch: async (req) => {
+    const res = await useFileRouter<Response>(req);
+    console.log("Request", req.method, req.url, res);
+
+    return res || new Response("No Response is provided", { status: 500 });
   },
 });
 

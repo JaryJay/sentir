@@ -29,7 +29,7 @@ const manifest = {
 	},
 	version: packageJson.version,
 	description: '__MSG_extensionDescription__',
-	host_permissions: ['<all_urls>', 'http://localhost:11434/*'],
+	host_permissions: ['<all_urls>', 'http://localhost:3000/*'],
 	permissions: ['storage', 'scripting', 'tabs', 'notifications'],
 	background: {
 		service_worker: 'background.js',

@@ -8,5 +8,10 @@ export const PromptRequest = z.object({
   placeholder: z.string().optional(),
   surroundingText: z.array(z.string()),
 });
-
 export type PromptRequest = z.infer<typeof PromptRequest>;
+
+export const CompletionResponse = z.object({
+  completion: z.string(),
+  timestamp: z.number().int().nonnegative(),
+});
+export type CompletionResponse = z.infer<typeof CompletionResponse>;

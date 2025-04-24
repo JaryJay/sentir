@@ -46,6 +46,7 @@ For example, if the current field value is "howw to ceter a" and the site is Sta
 As another example, if the current field value is "Asus" and the site is Amazon, the completion should be "Asus laptop". Note that the completion should include the "Asus" part.
 Similarly, if the current field value is "how" and the site is Google, the completion should be "how to". Note that the completion should include the "how" part.
 A final example, if the current field value is "hel", the completion should be "hello". Do not just output "lo".
+You do not have to complete a lot of words. Even just the next 2 or 3 words are enough.
 `;
 
 function constructPrompt(request: PromptRequest) {

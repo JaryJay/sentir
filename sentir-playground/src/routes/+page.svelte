@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+	let text = $state("");
+	let text2 = $state("");
+</script>
+
+<div class="flex flex-col gap-4 w-96">
+	<input type="text" bind:value={text} placeholder="Product Search" />
+	<textarea bind:value={text2} placeholder="Why are you applying for this job?"></textarea>
+</div>

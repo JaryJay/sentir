@@ -1,7 +1,7 @@
 # You only need to run this file once
 
 cd ./sentir-common
-bun install
+bun install --peer
 bun link
 cd ..
 

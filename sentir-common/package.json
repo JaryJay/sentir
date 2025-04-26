@@ -6,7 +6,8 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "zod": "^3.22.4"

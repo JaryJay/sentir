@@ -1,0 +1,67 @@
+name: Test on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  sentir-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+        working-directory: sentir-api
+
+      - name: Run tests
+        run: bun test
+        working-directory: sentir-api
+
+  sentir-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+        working-directory: sentir-common
+
+      - name: Run tests
+        run: bun test
+        working-directory: sentir-common
+
+  sentir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: sentir
+
+      - name: Run tests
+        run: pnpm test
+        working-directory: sentir

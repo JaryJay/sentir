@@ -1,6 +1,6 @@
 import { debounce } from 'lodash'
 import { getCompletion } from './prompt'
-import { isElementVisible, assignCSSStyleDeclaration } from './utils'
+import { isElementVisible, assignCSSStyleDeclaration } from '@extension/shared/lib/utils'
 
 const INPUT_WRAPPER_CLASS = 'sentir-extension-input-wrapper'
 const MARKED_INPUT_CLASS = 'sentir-extension-marked-input'
@@ -243,19 +243,30 @@ function setupEventListeners(input: HTMLInputElement | HTMLTextAreaElement, over
 			if (input.value.length === 0) {
 				return
 			}
+			const selectionStart = input.selectionStart
+			const selectionEnd = input.selectionEnd
+			const surroundingText = []
+			if (selectionStart !== null) {
+				if (selectionEnd !== null && selectionEnd > selectionStart) {
+					surroundingText.push(input.value.slice(selectionStart, selectionEnd))
+					surroundingText.push(input.value.slice(selectionEnd))
+				} else {
+					surroundingText.push(input.value.slice(selectionStart))
+				}
+			}
 			getCompletion({
-				inputText: input.value,
+				inputText: input.value.slice(0, selectionStart ?? undefined),
 				url: window.location.href,
-				cursorPosition: input.selectionStart ?? 0,
-				surroundingText: [],
+				surroundingText,
 				placeholder: input.placeholder,
 				label: input.labels?.[0]?.textContent ?? undefined,
 			}).then(completion => {
 				console.log(`completion: '${completion.completion}'`)
-				if (completion.timestamp > currentCompletion.timestamp) {
-					currentCompletion = completion
-					overlay.textContent = completion.completion
-				}
+				if (completion.timestamp <= currentCompletion.timestamp) return
+
+				const fullTextSuggestion = completion.completion + input.value.slice(selectionEnd ?? undefined)
+				currentCompletion = completion
+				overlay.textContent = fullTextSuggestion
 			})
 		}, 400),
 	)

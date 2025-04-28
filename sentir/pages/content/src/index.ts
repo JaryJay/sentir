@@ -1,3 +1,3 @@
-import { applyOverlayToAllInputFields } from '@src/applyOverlay'
+import { applyOverlayToAllInputFields } from '@/applyOverlay'
 
-applyOverlayToAllInputFields()
+// applyOverlayToAllInputFields()

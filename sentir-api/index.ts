@@ -11,6 +11,9 @@ const useFileRouter = await initFileRouter({
 const server = Bun.serve({
   port: 3000,
   fetch: async (req) => {
+    console.log(
+      `[${new Date().toLocaleTimeString()}] Request: ${req.method} ${req.url}`
+    );
     const res = await useFileRouter<Response>(req);
     return res ?? new Response("No Response is provided", { status: 500 });
   },

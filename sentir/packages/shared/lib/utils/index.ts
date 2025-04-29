@@ -1,7 +1,7 @@
 import { Overlayable } from 'lib/types/index.js'
 
 export function isOverlayable(node: Node): node is Overlayable {
-	return node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement
+	return node instanceof HTMLElement && (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement)
 }
 
 export function isElementVisible(element: HTMLElement): boolean {
@@ -28,7 +28,12 @@ export function assignCSSStyleDeclaration(target: CSSStyleDeclaration, source: C
 	}
 }
 
-export function computeKey(node: Overlayable) {
-	const index = Array.from(node.parentElement?.children || []).indexOf(node)
-	return `${node.tagName}-${node.id}-${node.name}-${node.parentElement?.tagName}-${index}`
+export function computeKey(node: Overlayable): string {
+	const classlist = Array.from(node.classList)
+	const key = classlist.find(className => className.startsWith('sentir-o-'))
+	if (!key) {
+		console.error('No key found for node', node)
+		throw new Error('No key found')
+	}
+	return key
 }

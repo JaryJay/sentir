@@ -5,13 +5,13 @@ import tailwindcssOutput from '../dist/tailwind-output.css?inline'
 
 const root = document.createElement('div')
 root.id = 'sentir-overlay-root'
-root.classList.add('pointer-events-none', 'w-0', 'h-0')
+root.classList.add('pointer-events-none', 'w-0')
 
 document.body.append(root)
 
 const rootIntoShadow = document.createElement('div')
 rootIntoShadow.id = 'shadow-root'
-rootIntoShadow.classList.add('absolute', 'inset-0', 'pointer-events-none')
+rootIntoShadow.classList.add('pointer-events-none', 'w-0')
 
 const shadowRoot = root.attachShadow({ mode: 'open' })
 

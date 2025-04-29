@@ -22,12 +22,13 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({ overlayable, lastVisualCh
 		const observer = new IntersectionObserver(
 			entries => {
 				entries.forEach(entry => {
-					if (entry.target === overlayable) {
+					if (entry.target === overlayable && entry.intersectionRatio >= 0.2) {
 						setIsVisible(entry.isIntersecting)
 					}
 				})
 			},
-			{ threshold: 0 },
+			// At least 20% of the element should be visible to be considered visible
+			{ threshold: 0.2 },
 		)
 		observer.observe(overlayable)
 		return () => observer.disconnect()

@@ -1,7 +1,27 @@
-import { Overlayable } from 'lib/types/index.js'
+import { Overlayable } from '../types/index.js'
 
 export function isOverlayable(node: Node): node is Overlayable {
-	return node instanceof HTMLElement && (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement)
+	if (node instanceof HTMLTextAreaElement) {
+		return true
+	}
+	if (node instanceof HTMLInputElement) {
+		// Noteably, we don't include password in this list, because that's a security risk
+		return [
+			'text',
+			'search',
+			'email',
+			'url',
+			'number',
+			'tel',
+			'color',
+			'date',
+			'time',
+			'datetime-local',
+			'month',
+			'week',
+		].includes(node.type)
+	}
+	return false
 }
 
 export function isElementVisible(element: HTMLElement): boolean {

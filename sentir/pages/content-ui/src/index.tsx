@@ -7,7 +7,7 @@ const root = document.createElement('div')
 root.id = 'sentir-overlay-root'
 root.classList.add('pointer-events-none', 'w-0')
 
-document.body.append(root)
+document.documentElement.append(root)
 
 const rootIntoShadow = document.createElement('div')
 rootIntoShadow.id = 'shadow-root'

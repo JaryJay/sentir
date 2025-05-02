@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Overlayable } from '@extension/shared/lib/types'
 import { computeKey, isOverlayable } from '@extension/shared/lib/utils'
 import SingleOverlay from '@/components/SingleOverlay'
@@ -19,10 +19,14 @@ function registerOverlayable(
 
 export default function App() {
 	const [overlayables, setOverlayables] = useState<Overlayable[]>([])
+	/** The SingleOverlay components will re-render when this changes */
 	const [lastVisualChangeTime, setLastVisualChangeTime] = useState<number>(0)
-	// Simple incrementing id for each overlayable
-	const [nextIdCache, setNextIdCache] = useState<number>(0)
+	/** Simple incrementing id for each overlayable */
+	const [nextIdCache, setNextIdCache] = useState<number>(1)
 
+	/**
+	 * Mutation observer to detect new/modified overlayable elements and register them
+	 */
 	useEffect(() => {
 		let nextId = nextIdCache
 
@@ -37,7 +41,7 @@ export default function App() {
 				// Catch the edge case where a sentir-registered element loses the sentir-* classes for whatever reason
 				if (mutation.type === 'attributes') {
 					const target = mutation.target
-					if (mutation.attributeName === 'class' && isOverlayable(target)) {
+					if (['class', 'type'].includes(mutation.attributeName ?? '') && isOverlayable(target)) {
 						nextId = registerOverlayable(target as Overlayable, nextId, setNextIdCache)
 					}
 				}
@@ -59,6 +63,21 @@ export default function App() {
 		return () => mutationObserver.disconnect()
 	}, [])
 
+	/**
+	 * Update lastVisualChangeTime whenever user scrolls
+	 */
+	useEffect(() => {
+		const handleScroll = () => {
+			setLastVisualChangeTime(Date.now())
+		}
+		window.addEventListener('scroll', handleScroll)
+		return () => window.removeEventListener('scroll', handleScroll)
+	}, [])
+
+	const onOverlayableResize = useCallback(() => {
+		setLastVisualChangeTime(Date.now())
+	}, [])
+
 	return (
 		<>
 			{overlayables.map(overlayable => (
@@ -66,7 +85,7 @@ export default function App() {
 					key={computeKey(overlayable)}
 					overlayable={overlayable}
 					lastVisualChangeTime={lastVisualChangeTime}
-					onResize={() => setLastVisualChangeTime(Date.now())}
+					onResize={onOverlayableResize}
 				/>
 			))}
 		</>

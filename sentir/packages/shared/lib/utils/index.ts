@@ -51,13 +51,3 @@ export function assignCSSStyleDeclaration(target: CSSStyleDeclaration, source: C
 		target.setProperty(propertyName, source.getPropertyValue(propertyName), source.getPropertyPriority(propertyName))
 	}
 }
-
-export function computeKey(node: Overlayable): string {
-	const classlist = Array.from(node.classList)
-	const key = classlist.find(className => className.startsWith('sentir-o-'))
-	if (!key) {
-		console.error('No key found for node', node)
-		throw new Error('No key found')
-	}
-	return key
-}

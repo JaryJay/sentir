@@ -1,9 +1,6 @@
 import { CompletionsResponse, PromptRequest } from 'sentir-common'
 
-/**
- * @deprecated Use the new prompt logic in the content-ui package
- */
-export async function getCompletion(request: PromptRequest): Promise<CompletionsResponse> {
+export async function getCompletions(request: PromptRequest): Promise<CompletionsResponse> {
 	// Call ollama local server
 	const response = await fetch('http://localhost:3000/v0/complete', {
 		method: 'POST',

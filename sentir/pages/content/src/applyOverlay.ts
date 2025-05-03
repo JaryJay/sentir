@@ -1,6 +1,7 @@
 import { debounce } from 'lodash'
 import { getCompletion } from './prompt'
 import { isElementVisible, assignCSSStyleDeclaration } from '@extension/shared/lib/utils'
+import { CompletionsResponse } from 'sentir-common'
 
 const INPUT_WRAPPER_CLASS = 'sentir-extension-input-wrapper'
 const MARKED_INPUT_CLASS = 'sentir-extension-marked-input'
@@ -229,8 +230,8 @@ function assignOverlayStyle(
  * Sets up event listeners for the input and overlay
  */
 function setupEventListeners(input: HTMLInputElement | HTMLTextAreaElement, overlay: HTMLDivElement) {
-	let currentCompletion = {
-		completion: '',
+	let currentCompletion: CompletionsResponse = {
+		completions: [],
 		timestamp: 0,
 	}
 	// Update overlay text when input value changes
@@ -261,10 +262,10 @@ function setupEventListeners(input: HTMLInputElement | HTMLTextAreaElement, over
 				placeholder: input.placeholder,
 				label: input.labels?.[0]?.textContent ?? undefined,
 			}).then(completion => {
-				console.log(`completion: '${completion.completion}'`)
+				console.log(`completion: '${completion.completions[0]}'`)
 				if (completion.timestamp <= currentCompletion.timestamp) return
 
-				const fullTextSuggestion = completion.completion + input.value.slice(selectionEnd ?? undefined)
+				const fullTextSuggestion = completion.completions[0] + input.value.slice(selectionEnd ?? undefined)
 				currentCompletion = completion
 				overlay.textContent = fullTextSuggestion
 			})

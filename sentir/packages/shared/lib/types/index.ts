@@ -5,6 +5,8 @@ export type RegisteredOverlayable = {
 	id: number
 	focused: boolean
 	text: string
+	completions: string[]
+	completionsTimestamp: number
 }
 
 export type OverlayableChangeEvent = {

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Overlayable, OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared/lib/types'
-import { computeKey, isOverlayable, isRegistered } from '@extension/shared/lib/utils'
+import { isOverlayable, isRegistered } from '@extension/shared/lib/utils'
 import SingleOverlay from '@/components/SingleOverlay'
+import _ from 'lodash'
+import { getCompletions } from './logic/prompt'
 
 function registerOverlayable(overlayable: Overlayable, id: number): RegisteredOverlayable {
 	if (isRegistered(overlayable)) {
@@ -14,6 +16,8 @@ function registerOverlayable(overlayable: Overlayable, id: number): RegisteredOv
 		id,
 		focused: false,
 		text: overlayable.value,
+		completions: [],
+		completionsTimestamp: 0,
 	}
 }
 
@@ -21,6 +25,22 @@ export default function App() {
 	const [registeredOverlayables, setRegisteredOverlayables] = useState<RegisteredOverlayable[]>([])
 	/** The SingleOverlay components will re-render when this changes */
 	const [lastVisualChangeTime, setLastVisualChangeTime] = useState<number>(0)
+
+	const findCompletions = useCallback(
+		_.throttle(async (registeredOverlayable: RegisteredOverlayable) => {
+			const { completions, timestamp: completionsTimestamp } = await getCompletions({
+				inputText: registeredOverlayable.text,
+				url: window.location.origin + window.location.pathname,
+				surroundingText: [],
+				placeholder: registeredOverlayable.overlayable.placeholder,
+				label: registeredOverlayable.overlayable.labels?.[0]?.textContent,
+			})
+			setRegisteredOverlayables(prev =>
+				prev.map(o => (o.id === registeredOverlayable.id ? { ...o, completions, completionsTimestamp } : o)),
+			)
+		}, 100),
+		[],
+	)
 
 	/**
 	 * Mutation observer to detect new/modified overlayable elements and register them
@@ -79,9 +99,13 @@ export default function App() {
 		setLastVisualChangeTime(Date.now())
 	}, [])
 
-	const onOverlayableChange = useCallback((id: number, change: Partial<OverlayableChangeEvent>) => {
-		setRegisteredOverlayables(prev => prev.map(o => (o.id === id ? { ...o, ...change } : o)))
-	}, [])
+	const onOverlayableChange = useCallback(
+		(registeredOverlayable: RegisteredOverlayable, change: Partial<OverlayableChangeEvent>) => {
+			void findCompletions(registeredOverlayable)
+			setRegisteredOverlayables(prev => prev.map(o => (o.id === registeredOverlayable.id ? { ...o, ...change } : o)))
+		},
+		[findCompletions],
+	)
 
 	return (
 		<>
@@ -91,7 +115,7 @@ export default function App() {
 					registeredOverlayable={registeredOverlayable}
 					lastVisualChangeTime={lastVisualChangeTime}
 					onResize={onOverlayableResize}
-					onChange={change => onOverlayableChange(registeredOverlayable.id, change)}
+					onChange={change => onOverlayableChange(registeredOverlayable, change)}
 				/>
 			))}
 		</>

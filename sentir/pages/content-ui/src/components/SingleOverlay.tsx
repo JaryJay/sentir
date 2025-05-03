@@ -16,6 +16,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 	onResize,
 }) => {
 	const [isVisible, setIsVisible] = useState(false)
+	const [currentCompletionIdx, setCurrentCompletionIdx] = useState(0)
 	const [prevSize, setPrevSize] = useState<readonly { inlineSize: number; blockSize: number }[] | null>(null)
 
 	const { overlayable, id } = registeredOverlayable
@@ -102,7 +103,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 			id={`sentir-overlay-${id}`}
 			className="fixed bg-[#14c8c81a] border-transparent overflow-hidden"
 			style={overlayStyle}>
-			{registeredOverlayable.text}
+			{registeredOverlayable.completions[currentCompletionIdx]}
 		</div>
 	)
 }

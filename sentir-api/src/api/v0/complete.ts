@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { PROCESS_ENV } from "@/utils/env";
 import { options } from "@/utils/options";
-import { CompletionResponse, PromptRequest } from "sentir-common";
+import { CompletionsResponse, PromptRequest } from "sentir-common";
 
 const ai = new GoogleGenAI({ apiKey: PROCESS_ENV.GEMINI_API_KEY });
 
@@ -29,11 +29,13 @@ async function complete(req: Request): Promise<Response> {
       status: 500,
     });
   }
+
+  const completions = response.candidates
+    ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
+    .filter((s) => s !== undefined) ?? [response.text];
+
   return new Response(
-    JSON.stringify({
-      completion: response.text,
-      timestamp,
-    } satisfies CompletionResponse),
+    JSON.stringify({ completions, timestamp } satisfies CompletionsResponse),
     { status: 200 }
   );
 }

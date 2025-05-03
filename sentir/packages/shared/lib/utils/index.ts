@@ -1,4 +1,4 @@
-import { Overlayable } from '../types/index.js'
+import { Overlayable, RegisteredOverlayable } from '../types/index.js'
 
 export function isOverlayable(node: Node): node is Overlayable {
 	if (node instanceof HTMLTextAreaElement) {
@@ -22,6 +22,10 @@ export function isOverlayable(node: Node): node is Overlayable {
 		].includes(node.type)
 	}
 	return false
+}
+
+export function isRegistered(overlayable: Overlayable): boolean {
+	return overlayable.classList.contains('sentir-registered')
 }
 
 export function isElementVisible(element: HTMLElement): boolean {

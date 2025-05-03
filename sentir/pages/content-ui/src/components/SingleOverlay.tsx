@@ -1,16 +1,24 @@
-import { Overlayable } from '@extension/shared/lib/types'
+import { Overlayable, OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared/lib/types'
 import { CSSProperties, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 
 type SingleOverlayProps = {
-	overlayable: Overlayable
+	registeredOverlayable: RegisteredOverlayable
 	lastVisualChangeTime: number
-	onResize: (overlayable: Overlayable) => void
+	onChange: (event: Partial<OverlayableChangeEvent>) => void
+	onResize: () => void
 }
 
-const SingleOverlay: React.FC<SingleOverlayProps> = ({ overlayable, lastVisualChangeTime, onResize }) => {
+const SingleOverlay: React.FC<SingleOverlayProps> = ({
+	registeredOverlayable,
+	lastVisualChangeTime,
+	onChange,
+	onResize,
+}) => {
 	const [isVisible, setIsVisible] = useState(false)
 	const [prevSize, setPrevSize] = useState<readonly { inlineSize: number; blockSize: number }[] | null>(null)
+
+	const { overlayable, id } = registeredOverlayable
 
 	/** Call onResize when the overlayable is resized */
 	useEffect(() => {
@@ -21,7 +29,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({ overlayable, lastVisualCh
 				const newSize = entry.contentBoxSize.map(s => ({ inlineSize: s.inlineSize, blockSize: s.blockSize }))
 				if (_.isEqual(newSize, prevSize)) return
 				setPrevSize(newSize)
-				onResize(overlayable)
+				onResize()
 			})
 		})
 		resizeObserver.observe(overlayable)
@@ -72,10 +80,29 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({ overlayable, lastVisualCh
 		}
 	}, [overlayable, lastVisualChangeTime])
 
+	/** Attach listeners to the overlayable input */
+	useEffect(() => {
+		const handleInput = () => onChange({ text: overlayable.value })
+		const handleFocus = () => onChange({ focused: true })
+		const handleBlur = () => onChange({ focused: false })
+
+		overlayable.addEventListener('input', handleInput)
+		overlayable.addEventListener('focus', handleFocus)
+		overlayable.addEventListener('blur', handleBlur)
+		return () => {
+			overlayable.removeEventListener('input', handleInput)
+			overlayable.removeEventListener('focus', handleFocus)
+			overlayable.removeEventListener('blur', handleBlur)
+		}
+	}, [overlayable])
+
 	if (!isVisible) return null
 	return (
-		<div className="fixed bg-[#14c8c81a] border-transparent overflow-hidden" style={overlayStyle}>
-			{overlayable.id} {lastVisualChangeTime}
+		<div
+			id={`sentir-overlay-${id}`}
+			className="fixed bg-[#14c8c81a] border-transparent overflow-hidden"
+			style={overlayStyle}>
+			{registeredOverlayable.text}
 		</div>
 	)
 }

@@ -20,8 +20,12 @@ async function complete(req: Request): Promise<Response> {
 
   // Call ollama local server
   const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.0-flash-lite",
     contents: prompt,
+    config: {
+      candidateCount: 2,
+      systemInstruction: SYSTEM_INSTRUCTION,
+    },
   });
 
   if (!response.text) {
@@ -29,6 +33,8 @@ async function complete(req: Request): Promise<Response> {
       status: 500,
     });
   }
+
+  console.dir(response, { depth: null });
 
   const completions = response.candidates
     ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
@@ -40,22 +46,21 @@ async function complete(req: Request): Promise<Response> {
   );
 }
 
-const SYSTEM_PROMPT = `
+const SYSTEM_INSTRUCTION = `
 You are an intelligent form completion assistant, similar to GitHub Copilot or Cursor IDE.
 Given the following context of a web page and the current content of an input/textarea field, predict the most likely word or phrase the user will type to complete the field.
+You are allowed to modify the current field value, for example to fix typos.
 Do not enclose the completion in quotes. Output the ENTIRE completion as a string.
 For example, if the current field value is "howw to ceter a" and the site is Stack Overflow, the completion should be "how to center a div".
 As another example, if the current field value is "Asus" and the site is Amazon, the completion should be "Asus laptop", not just "laptop".
 Similarly, if the current field value is "how" and the site is Google, the completion should be "how to", not just "to".
 A final example, if the current field value is "hel", the completion should be "hello". Do not just output "lo".
 You do not have to complete a lot of words. Even just the next 1 or 2 words are enough.
-Do not output a newline character at the end.
+Do not output a newline character at the end, unless you are sure it is part of the completion.
 `;
 
 function constructPrompt(request: PromptRequest) {
   return `
-${SYSTEM_PROMPT}
-
 Context:
 - URL: ${request.url}
 ${
@@ -67,7 +72,7 @@ ${request.label ? `- Field label: ${request.label}` : ""}
 ${request.placeholder ? `- Placeholder text: ${request.placeholder}` : ""}
 - Current field value: "${request.inputText}"
 
-Prediction (as a reminder, do NOT just include the end of the completion, but the entire string which often includes the current field value):
+Prediction:
 `;
 }
 

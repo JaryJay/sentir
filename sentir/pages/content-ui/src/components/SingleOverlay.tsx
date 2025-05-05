@@ -81,7 +81,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		}
 	}, [overlayable, lastVisualChangeTime])
 
-	/** Attach listeners to the overlayable input */
+	/** Attach listeners to the overlayable input to detect focus and input events */
 	useEffect(() => {
 		const handleInput = () => onChange({ text: overlayable.value })
 		const handleFocus = () => onChange({ focused: true })
@@ -95,7 +95,20 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 			overlayable.removeEventListener('focus', handleFocus)
 			overlayable.removeEventListener('blur', handleBlur)
 		}
-	}, [overlayable])
+	}, [overlayable, onChange])
+
+	/** When tab is pressed, accept the current completion */
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Tab' && registeredOverlayable.completions.length > 0) {
+				event.preventDefault()
+				overlayable.value = registeredOverlayable.completions[currentCompletionIdx]
+				onChange({ text: registeredOverlayable.completions[currentCompletionIdx] })
+			}
+		}
+		window.addEventListener('keydown', handleKeyDown)
+		return () => window.removeEventListener('keydown', handleKeyDown)
+	}, [registeredOverlayable, onChange])
 
 	if (!isVisible) return null
 	return (

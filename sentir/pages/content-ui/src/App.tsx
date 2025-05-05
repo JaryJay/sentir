@@ -36,7 +36,14 @@ export default function App() {
 				label: registeredOverlayable.overlayable.labels?.[0]?.textContent,
 			})
 			setRegisteredOverlayables(prev =>
-				prev.map(o => (o.id === registeredOverlayable.id ? { ...o, completions, completionsTimestamp } : o)),
+				prev.map(o => {
+					if (o.id !== registeredOverlayable.id) return o
+					// Only update the completions if the timestamp is newer
+					if (completionsTimestamp > o.completionsTimestamp) {
+						return { ...o, completions, completionsTimestamp }
+					}
+					return o
+				}),
 			)
 		}, 100),
 		[],
@@ -101,7 +108,10 @@ export default function App() {
 
 	const onOverlayableChange = useCallback(
 		(registeredOverlayable: RegisteredOverlayable, change: Partial<OverlayableChangeEvent>) => {
-			void findCompletions(registeredOverlayable)
+			// If the text has changed, or the overlayable is focused and has no completions
+			if (change.text !== undefined || (change.focused && registeredOverlayable.completions.length === 0)) {
+				void findCompletions(registeredOverlayable)
+			}
 			setRegisteredOverlayables(prev => prev.map(o => (o.id === registeredOverlayable.id ? { ...o, ...change } : o)))
 		},
 		[findCompletions],

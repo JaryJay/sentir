@@ -1,4 +1,5 @@
-import { Overlayable, RegisteredOverlayable } from '../types/index.js'
+import { Overlayable } from '../types/index.js'
+export * from './string.js'
 
 export function isOverlayable(node: Node): node is Overlayable {
 	if (node instanceof HTMLTextAreaElement) {

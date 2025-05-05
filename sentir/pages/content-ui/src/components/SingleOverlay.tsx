@@ -1,6 +1,7 @@
 import { Overlayable, OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared/lib/types'
 import { CSSProperties, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
+import { stringDiff, StringDiffResult } from '@extension/shared/lib/utils'
 
 type SingleOverlayProps = {
 	registeredOverlayable: RegisteredOverlayable
@@ -63,10 +64,10 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		const style = window.getComputedStyle(overlayable)
 		const boundingRect = overlayable.getBoundingClientRect()
 		return {
-			top: boundingRect.top,
-			left: boundingRect.left,
-			width: boundingRect.width,
-			height: boundingRect.height,
+			top: `${boundingRect.top}px`,
+			left: `${boundingRect.left}px`,
+			width: `${boundingRect.width}px`,
+			height: `${boundingRect.height}px`,
 			padding: style.padding,
 			borderWidth: style.borderWidth,
 			borderStyle: style.borderStyle,
@@ -111,14 +112,78 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 	}, [registeredOverlayable, onChange])
 
 	if (!isVisible) return null
+
+	if (registeredOverlayable.completions.length === 0) {
+		return (
+			<div
+				id={`sentir-overlay-${id}`}
+				className="fixed bg-[#14c8c81a] border-transparent overflow-hidden"
+				style={overlayStyle}></div>
+		)
+	}
+
+	const textCompletionDiff = stringDiff(overlayable.value, registeredOverlayable.completions[currentCompletionIdx])
 	return (
 		<div
 			id={`sentir-overlay-${id}`}
 			className="fixed bg-[#14c8c81a] border-transparent overflow-hidden"
 			style={overlayStyle}>
-			{registeredOverlayable.completions[currentCompletionIdx]}
+			<CompletionText
+				currentText={overlayable.value}
+				completion={registeredOverlayable.completions[currentCompletionIdx]}
+				textCompletionDiff={textCompletionDiff}
+			/>
 		</div>
 	)
+}
+
+const CompletionText: React.FC<{
+	currentText: string
+	completion: string
+	textCompletionDiff: StringDiffResult
+}> = ({ currentText, completion, textCompletionDiff }) => {
+	switch (textCompletionDiff.category) {
+		case 'equal': {
+			return completion
+		}
+		case 'insert': {
+			const { textToInsert, index } = textCompletionDiff
+			return (
+				<>
+					{currentText.slice(0, index)}
+					<span className="text-inherit/50 italic">{textToInsert}</span>
+					{currentText.slice(index)}
+				</>
+			)
+		}
+		case 'delete': {
+			const { index, endIndex } = textCompletionDiff
+			return (
+				<>
+					{currentText.slice(0, index)}
+					<span className="bg-red-400/30 rounded-sm">{currentText.slice(index, endIndex)}</span>
+					{currentText.slice(endIndex)}
+				</>
+			)
+		}
+		case 'mixed': {
+			const { index, endIndex } = textCompletionDiff
+			return (
+				<>
+					{currentText.slice(0, index)}
+					<span className="bg-red-400/30 rounded-sm">{currentText.slice(index, endIndex)}</span>
+					{currentText.slice(endIndex)}
+
+					<div className="absolute -right-4 top-0 translate-x-full rounded-sm text-inherit/50 italic">
+						{textCompletionDiff.textToInsert}
+					</div>
+				</>
+			)
+		}
+		default: {
+			throw new Error(`Invalid text completion diff category`)
+		}
+	}
 }
 
 export default SingleOverlay

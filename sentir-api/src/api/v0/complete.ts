@@ -17,13 +17,6 @@ Do not output a newline character at the end, unless you are sure it is part of 
 `;
 
 const ai = new GoogleGenAI({ apiKey: PROCESS_ENV.GEMINI_API_KEY });
-const cache = await ai.caches.create({
-  model: "gemini-2.0-flash-lite",
-  config: {
-    systemInstruction: SYSTEM_INSTRUCTION,
-    ttl: "43200s",
-  },
-});
 
 async function complete(req: Request): Promise<Response> {
   const parsed = PromptRequest.safeParse(await req.json());
@@ -44,7 +37,7 @@ async function complete(req: Request): Promise<Response> {
     contents: prompt,
     config: {
       candidateCount: 2,
-      cachedContent: cache.name,
+      systemInstruction: SYSTEM_INSTRUCTION,
       responseSchema: {
         type: Type.OBJECT,
         properties: {

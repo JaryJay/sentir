@@ -108,11 +108,12 @@ export default function App() {
 
 	const onOverlayableChange = useCallback(
 		(registeredOverlayable: RegisteredOverlayable, change: Partial<OverlayableChangeEvent>) => {
+			const changedOverlayable = { ...registeredOverlayable, ...change }
 			// If the text has changed, or the overlayable is focused and has no completions
 			if (change.text !== undefined || (change.focused && registeredOverlayable.completions.length === 0)) {
-				void findCompletions(registeredOverlayable)
+				void findCompletions(changedOverlayable)
 			}
-			setRegisteredOverlayables(prev => prev.map(o => (o.id === registeredOverlayable.id ? { ...o, ...change } : o)))
+			setRegisteredOverlayables(prev => prev.map(o => (o.id === registeredOverlayable.id ? changedOverlayable : o)))
 		},
 		[findCompletions],
 	)

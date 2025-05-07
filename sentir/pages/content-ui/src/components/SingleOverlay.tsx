@@ -101,7 +101,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 	/** When tab is pressed, accept the current completion */
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'Tab' && registeredOverlayable.completions.length > 0) {
+			if (event.key === 'Tab' && registeredOverlayable.completions.length > 0 && registeredOverlayable.focused) {
 				event.preventDefault()
 				overlayable.value = registeredOverlayable.completions[currentCompletionIdx]
 				onChange({ text: registeredOverlayable.completions[currentCompletionIdx] })

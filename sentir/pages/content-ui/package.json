@@ -13,7 +13,7 @@
 		"clean:node_modules": "pnpx rimraf node_modules",
 		"clean:turbo": "rimraf .turbo",
 		"clean": "pnpm clean:bundle && pnpm clean:node_modules && pnpm clean:turbo",
-		"ready": "pnpm tailwindcss -i ./src/tailwind-input.css -o ./dist/tailwind-output.css -m",
+		"ready": "bunx @tailwindcss/cli -i ./src/tailwind-input.css -o ./dist/tailwind-output.css -m",
 		"build": "pnpm ready && vite build",
 		"dev": "vite build --mode development",
 		"lint": "eslint .",
@@ -35,6 +35,7 @@
 		"@extension/tailwindcss-config": "workspace:*",
 		"@extension/tsconfig": "workspace:*",
 		"@extension/vite-config": "workspace:*",
-		"@types/lodash": "^4.17.16"
+		"@types/lodash": "^4.17.16",
+		"@tailwindcss/cli": "^4.1.5"
 	}
 }

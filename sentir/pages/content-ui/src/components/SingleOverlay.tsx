@@ -124,10 +124,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 
 	const textCompletionDiff = stringDiff(overlayable.value, registeredOverlayable.completions[currentCompletionIdx])
 	return (
-		<div
-			id={`sentir-overlay-${id}`}
-			className="fixed bg-[#14c8c81a] border-transparent overflow-hidden"
-			style={overlayStyle}>
+		<div id={`sentir-overlay-${id}`} className="fixed bg-[#14c8c81a] border-transparent" style={overlayStyle}>
 			<CompletionText
 				currentText={overlayable.value}
 				completion={registeredOverlayable.completions[currentCompletionIdx]}
@@ -151,7 +148,7 @@ const CompletionText: React.FC<{
 			return (
 				<>
 					{currentText.slice(0, index)}
-					<span className="text-inherit/50 italic">{textToInsert}</span>
+					<span className="text-current/50 italic">{textToInsert}</span>
 					{currentText.slice(index)}
 				</>
 			)
@@ -161,7 +158,7 @@ const CompletionText: React.FC<{
 			return (
 				<>
 					{currentText.slice(0, index)}
-					<span className="bg-red-400/30 rounded-sm">{currentText.slice(index, endIndex)}</span>
+					<span className="bg-red-400/30 rounded-xs">{currentText.slice(index, endIndex)}</span>
 					{currentText.slice(endIndex)}
 				</>
 			)
@@ -171,11 +168,11 @@ const CompletionText: React.FC<{
 			return (
 				<>
 					{currentText.slice(0, index)}
-					<span className="bg-red-400/30 rounded-sm">{currentText.slice(index, endIndex)}</span>
+					<span className="bg-red-400/30 rounded-xs">{currentText.slice(index, endIndex)}</span>
 					{currentText.slice(endIndex)}
 
-					<div className="absolute -right-4 top-0 translate-x-full rounded-sm text-inherit/50 italic">
-						{textCompletionDiff.textToInsert}
+					<div className="absolute left-[calc(100%+0.5rem)] top-0 min-w-40 max-w-64 px-2 py-1 border border-current/50 box-border">
+						<span className="bg-green-400/30 rounded-xs">{textCompletionDiff.textToInsert}</span>
 					</div>
 				</>
 			)

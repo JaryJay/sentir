@@ -1,0 +1,12 @@
+{
+  "name": "sentir",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"cd sentir-api && bun dev\" \"cd sentir-playground && bun dev\" \"cd sentir && bun dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

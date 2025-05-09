@@ -64,13 +64,13 @@ async function complete(req: Request): Promise<Response> {
 
   console.dir(response, { depth: null });
 
-  const rawCompletions = response.candidates
-    ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
-    .filter((s) => s !== undefined) ?? [response.text];
+  const rawCompletions = (
+    response.candidates
+      ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
+      .filter((s) => s !== undefined) ?? [response.text]
+  ).map((text) => RawCompletionResponse.parse(JSON.parse(text)));
 
-  const completions = rawCompletions.map((text) =>
-    RawCompletionResponse.parse(JSON.parse(text))
-  );
+  const completions = processRawCompletions(rawCompletions, request);
 
   return new Response(
     JSON.stringify({ completions, timestamp } satisfies CompletionsResponse),
@@ -95,32 +95,34 @@ Prediction:
 }
 
 function processRawCompletions(
-  rawCompletions: RawCompletionResponse[]
+  rawCompletions: RawCompletionResponse[],
+  request: PromptRequest
 ): Completion[] {
-  const completions: Completion[] = [];
-  for (const rawCompletion of rawCompletions) {
+  const oldText = request.inputText;
+
+  return rawCompletions.map((rawCompletion) => {
     switch (rawCompletion.completionType) {
-      case "insert":
-        completions.push({
+      case "insert": {
+        return {
           completionType: "insert",
           textToInsert: rawCompletion.completion,
-          index: 0,
-        });
-        break;
-      case "replace":
-        completions.push({
+          index: oldText.length,
+        };
+      }
+      case "replace": {
+        const lastIndex = oldText.lastIndexOf(rawCompletion.textToReplace);
+        return {
           completionType: "replace",
           textToInsert: rawCompletion.completion,
-          index: 0,
-          endIndex: rawCompletion.textToReplace.length,
-        });
-        break;
-      case "noop":
-        completions.push({ completionType: "noop" });
-        break;
+          index: lastIndex,
+          endIndex: lastIndex + rawCompletion.textToReplace.length,
+        };
+      }
+      case "noop": {
+        return { completionType: "noop" };
+      }
     }
-  }
-  return completions;
+  });
 }
 
 export default {

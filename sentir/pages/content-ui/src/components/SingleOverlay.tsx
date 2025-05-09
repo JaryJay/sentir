@@ -1,7 +1,7 @@
-import { Overlayable, OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared/lib/types'
+import { OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared/lib/types'
 import { CSSProperties, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
-import { stringDiff, StringDiffResult } from '@extension/shared/lib/utils'
+import { applyCompletion, Completion } from 'sentir-common'
 
 type SingleOverlayProps = {
 	registeredOverlayable: RegisteredOverlayable
@@ -104,8 +104,11 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (event.key === 'Tab' && registeredOverlayable.completions.length > 0 && registeredOverlayable.focused) {
 				event.preventDefault()
-				overlayable.value = registeredOverlayable.completions[currentCompletionIdx]
-				onChange({ text: registeredOverlayable.completions[currentCompletionIdx] })
+				const oldText = overlayable.value
+				const completion = registeredOverlayable.completions[currentCompletionIdx]
+				const newText = applyCompletion(oldText, completion)
+				overlayable.value = newText
+				onChange({ text: newText })
 			}
 		}
 		window.addEventListener('keydown', handleKeyDown)
@@ -123,13 +126,11 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		)
 	}
 
-	const textCompletionDiff = stringDiff(overlayable.value, registeredOverlayable.completions[currentCompletionIdx])
 	return (
 		<div id={`sentir-overlay-${id}`} className="fixed bg-[#14c8c81a] border-transparent" style={overlayStyle}>
 			<CompletionText
 				currentText={overlayable.value}
 				completion={registeredOverlayable.completions[currentCompletionIdx]}
-				textCompletionDiff={textCompletionDiff}
 			/>
 		</div>
 	)
@@ -137,15 +138,11 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 
 const CompletionText: React.FC<{
 	currentText: string
-	completion: string
-	textCompletionDiff: StringDiffResult
-}> = ({ currentText, completion, textCompletionDiff }) => {
-	switch (textCompletionDiff.category) {
-		case 'equal': {
-			return completion
-		}
+	completion: Completion
+}> = ({ currentText, completion }) => {
+	switch (completion.completionType) {
 		case 'insert': {
-			const { textToInsert, index } = textCompletionDiff
+			const { textToInsert, index } = completion
 			return (
 				<>
 					{currentText.slice(0, index)}
@@ -154,29 +151,23 @@ const CompletionText: React.FC<{
 				</>
 			)
 		}
-		case 'delete': {
-			const { index, endIndex } = textCompletionDiff
+		case 'replace': {
+			const { textToInsert, index, endIndex } = completion
 			return (
 				<>
 					{currentText.slice(0, index)}
 					<span className="bg-red-400/30 rounded-xs">{currentText.slice(index, endIndex)}</span>
 					{currentText.slice(endIndex)}
+					{textToInsert && (
+						<div className="absolute left-[calc(100%+0.5rem)] top-0 min-w-40 max-w-64 px-2 py-1 border border-current/50 box-border">
+							<span className="bg-green-400/30 rounded-xs">{textToInsert}</span>
+						</div>
+					)}
 				</>
 			)
 		}
-		case 'mixed': {
-			const { index, endIndex } = textCompletionDiff
-			return (
-				<>
-					{currentText.slice(0, index)}
-					<span className="bg-red-400/30 rounded-xs">{currentText.slice(index, endIndex)}</span>
-					{currentText.slice(endIndex)}
-
-					<div className="absolute left-[calc(100%+0.5rem)] top-0 min-w-40 max-w-64 px-2 py-1 border border-current/50 box-border">
-						<span className="bg-green-400/30 rounded-xs">{textCompletionDiff.textToInsert}</span>
-					</div>
-				</>
-			)
+		case 'noop': {
+			return currentText
 		}
 		default: {
 			throw new Error(`Invalid text completion diff category`)

@@ -21,6 +21,9 @@
 		"prettier": "prettier . --write --ignore-path ../../.prettierignore",
 		"type-check": "tsc --noEmit"
 	},
+	"dependencies": {
+		"sentir-common": "link:../../../sentir-common"
+	},
 	"devDependencies": {
 		"@extension/storage": "workspace:*",
 		"@extension/tsconfig": "workspace:*"

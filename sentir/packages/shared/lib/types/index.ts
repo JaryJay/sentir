@@ -1,11 +1,13 @@
-export type Overlayable = HTMLInputElement | HTMLTextAreaElement
+import { Completion } from "sentir-common";
+
+export type Overlayable = HTMLInputElement | HTMLTextAreaElement;
 
 export type RegisteredOverlayable = {
 	overlayable: Overlayable
 	id: number
 	focused: boolean
 	text: string
-	completions: string[]
+	completions: Completion[]
 	completionsTimestamp: number
 }
 

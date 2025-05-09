@@ -78,6 +78,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 			letterSpacing: style.letterSpacing,
 			lineHeight: style.lineHeight,
 			transition: style.transition,
+			whiteSpace: style.whiteSpace,
 			zIndex: style.zIndex,
 		}
 	}, [overlayable, lastVisualChangeTime])

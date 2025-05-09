@@ -1,22 +1,35 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, type Schema } from "@google/genai";
 import { PROCESS_ENV } from "@/utils/env";
 import { options } from "@/utils/options";
-import { CompletionsResponse, PromptRequest } from "sentir-common";
-
-const SYSTEM_INSTRUCTION = `
-You are an intelligent form completion assistant, similar to GitHub Copilot or Cursor IDE.
-Given the following context of a web page and the current content of an input/textarea field, predict the most likely word or phrase the user will type to complete the field.
-You are allowed to modify the current field value, for example to fix typos.
-Do not enclose the completion in quotes. Output the ENTIRE completion as a string.
-For example, if the current field value is "howw to ceter a" and the site is Stack Overflow, the completion should be "how to center a div".
-As another example, if the current field value is "Asus" and the site is Amazon, the completion should be "Asus laptop", not just "laptop".
-Similarly, if the current field value is "how" and the site is Google, the completion should be "how to", not just "to".
-A final example, if the current field value is "hel", the completion should be "hello". Do not just output "lo".
-You do not have to complete a lot of words. Even just the next 1 or 2 words are enough.
-Do not output a newline character at the end, unless you are sure it is part of the completion.
-`;
+import { Completion, CompletionsResponse, PromptRequest } from "sentir-common";
+import { RawCompletionResponse } from "@/types";
 
 const ai = new GoogleGenAI({ apiKey: PROCESS_ENV.GEMINI_API_KEY });
+const systemInstruction = await Bun.file("./res/system_instruction.md").text();
+const responseSchema: Schema = {
+  type: Type.OBJECT,
+  properties: {
+    completionType: {
+      type: Type.STRING,
+      description:
+        "The type of completion to perform. If the completion only adds to the current text, use 'insert'. If the completion replaces a part of the current text, use 'replace'. If there's nothing to change, use 'noop'.",
+      enum: ["insert", "replace", "noop"],
+    },
+    textToReplace: {
+      type: Type.STRING,
+      description:
+        "The text to replace. Only present if completionType is 'replace'.",
+      example: "w",
+    },
+    completion: {
+      type: Type.STRING,
+      description:
+        "The completion to perform. Only present if completionType is 'insert' or 'replace'.",
+      example: "a few words",
+    },
+  },
+  required: ["completionType"],
+};
 
 async function complete(req: Request): Promise<Response> {
   const parsed = PromptRequest.safeParse(await req.json());
@@ -37,30 +50,9 @@ async function complete(req: Request): Promise<Response> {
     contents: prompt,
     config: {
       candidateCount: 2,
-      systemInstruction: SYSTEM_INSTRUCTION,
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          completionType: {
-            type: Type.STRING,
-            description:
-              "The type of completion to perform. If the completion only adds to the current text, use 'insert'. If the completion replaces a part of the current text, use 'replace'.",
-            enum: ["insert", "replace"],
-          },
-          textToReplace: {
-            type: Type.STRING,
-            description:
-              "The text to replace. Only present if completionType is 'replace'.",
-            example: "w",
-            nullable: true,
-          },
-          completion: {
-            type: Type.STRING,
-            description: "The completion to perform",
-            example: "a few words",
-          },
-        },
-      },
+      systemInstruction,
+      responseMimeType: "application/json",
+      responseSchema,
     },
   });
 
@@ -76,10 +68,8 @@ async function complete(req: Request): Promise<Response> {
     ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
     .filter((s) => s !== undefined) ?? [response.text];
 
-  // The LLM will often add an unecessary \n on the end
-  // This is a hack to remove that (but only 1 instance because sometimes you actually want to enter newlines)
   const completions = rawCompletions.map((text) =>
-    text.endsWith("\n") ? text.slice(0, text.length - 1) : text
+    RawCompletionResponse.parse(JSON.parse(text))
   );
 
   return new Response(
@@ -90,19 +80,47 @@ async function complete(req: Request): Promise<Response> {
 
 function constructPrompt(request: PromptRequest) {
   return `
-Context:
-- URL: ${request.url}
+URL: ${request.url}
 ${
   request.surroundingText.length
-    ? `- Surrounding text: ${request.surroundingText.join(", ")}`
+    ? `Surrounding text: ${request.surroundingText.join(", ")}`
     : ""
 }
-${request.label ? `- Field label: ${request.label}` : ""}
-${request.placeholder ? `- Placeholder text: ${request.placeholder}` : ""}
-- Current field value: "${request.inputText}"
+${request.label ? `Label: "${request.label}"` : ""}
+${request.placeholder ? `Placeholder text: "${request.placeholder}"` : ""}
+Current field value: "${request.inputText}"
 
 Prediction:
 `;
+}
+
+function processRawCompletions(
+  rawCompletions: RawCompletionResponse[]
+): Completion[] {
+  const completions: Completion[] = [];
+  for (const rawCompletion of rawCompletions) {
+    switch (rawCompletion.completionType) {
+      case "insert":
+        completions.push({
+          completionType: "insert",
+          textToInsert: rawCompletion.completion,
+          index: 0,
+        });
+        break;
+      case "replace":
+        completions.push({
+          completionType: "replace",
+          textToInsert: rawCompletion.completion,
+          index: 0,
+          endIndex: rawCompletion.textToReplace.length,
+        });
+        break;
+      case "noop":
+        completions.push({ completionType: "noop" });
+        break;
+    }
+  }
+  return completions;
 }
 
 export default {

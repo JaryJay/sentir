@@ -103,6 +103,9 @@ function processRawCompletions(
   return rawCompletions.map((rawCompletion) => {
     switch (rawCompletion.completionType) {
       case "insert": {
+        if (!rawCompletion.completion) {
+          return { completionType: "noop" };
+        }
         return {
           completionType: "insert",
           textToInsert: rawCompletion.completion,

@@ -4,6 +4,7 @@ import { isOverlayable, isRegistered } from '@extension/shared/lib/utils'
 import SingleOverlay from '@/components/SingleOverlay'
 import _ from 'lodash'
 import { getCompletions } from './logic/prompt'
+import { Completion } from 'sentir-common'
 
 function registerOverlayable(overlayable: Overlayable, id: number): RegisteredOverlayable {
 	if (isRegistered(overlayable)) {
@@ -118,6 +119,12 @@ export default function App() {
 		[findCompletions],
 	)
 
+	const onCompletionAccept = useCallback((registeredOverlayable: RegisteredOverlayable, completion: Completion) => {
+		setRegisteredOverlayables(prev =>
+			prev.map(o => (o.id === registeredOverlayable.id ? { ...o, completions: [] } : o)),
+		)
+	}, [])
+
 	return (
 		<>
 			{registeredOverlayables.map(registeredOverlayable => (
@@ -125,8 +132,9 @@ export default function App() {
 					key={registeredOverlayable.id}
 					registeredOverlayable={registeredOverlayable}
 					lastVisualChangeTime={lastVisualChangeTime}
-					onResize={onOverlayableResize}
 					onChange={change => onOverlayableChange(registeredOverlayable, change)}
+					onCompletionAccept={completion => onCompletionAccept(registeredOverlayable, completion)}
+					onResize={onOverlayableResize}
 				/>
 			))}
 		</>

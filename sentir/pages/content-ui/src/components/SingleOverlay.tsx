@@ -7,6 +7,7 @@ type SingleOverlayProps = {
 	registeredOverlayable: RegisteredOverlayable
 	lastVisualChangeTime: number
 	onChange: (event: Partial<OverlayableChangeEvent>) => void
+	onCompletionAccept: (completion: Completion) => void
 	onResize: () => void
 }
 
@@ -14,6 +15,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 	registeredOverlayable,
 	lastVisualChangeTime,
 	onChange,
+	onCompletionAccept,
 	onResize,
 }) => {
 	const [isVisible, setIsVisible] = useState(false)
@@ -108,7 +110,9 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 				const completion = registeredOverlayable.completions[currentCompletionIdx]
 				const newText = applyCompletion(oldText, completion)
 				overlayable.value = newText
+				console.log('Completion accepted. Clearing completions 1')
 				onChange({ text: newText })
+				onCompletionAccept(completion)
 			}
 		}
 		window.addEventListener('keydown', handleKeyDown)

@@ -26,6 +26,7 @@ const responseSchema: Schema = {
       description:
         "The completion to perform. Only present if completionType is 'insert' or 'replace'.",
       example: "a few words",
+      maxLength: "30",
     },
   },
   required: ["completionType"],
@@ -53,6 +54,7 @@ async function complete(req: Request): Promise<Response> {
       systemInstruction,
       responseMimeType: "application/json",
       responseSchema,
+      maxOutputTokens: 150,
     },
   });
 

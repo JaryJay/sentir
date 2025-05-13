@@ -24,6 +24,8 @@ You will receive the following contextual information:
 
 Notice that there are often multiple correct answers. For example, you can replace an existing, incomplete word with the full word; or, you can insert the rest of the word not including what the user already typed.
 
+You should be very particular about spaces. For example, if the current input field is empty, your completion typically shouldn't start with a space.
+
 # Examples
 
 ## Example 1

@@ -91,8 +91,6 @@ ${
 ${request.label ? `Label: "${request.label}"` : ""}
 ${request.placeholder ? `Placeholder text: "${request.placeholder}"` : ""}
 Current field value: "${request.inputText}"
-
-Prediction:
 `;
 }
 
@@ -107,6 +105,10 @@ function processRawCompletions(
       case "insert": {
         if (!rawCompletion.completion) {
           return { completionType: "noop" };
+        }
+        // Sometimes the AI will insert a space at the beginning of the completion. This is a hack to fix that.
+        if (oldText == "" && rawCompletion.completion.startsWith(" ")) {
+          rawCompletion.completion = rawCompletion.completion.slice(1);
         }
         return {
           completionType: "insert",

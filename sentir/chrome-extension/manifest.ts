@@ -30,7 +30,7 @@ const manifest = {
 	version: packageJson.version,
 	description: '__MSG_extensionDescription__',
 	host_permissions: ['<all_urls>', 'http://localhost:3000/*'],
-	permissions: ['storage', 'scripting', 'tabs', 'notifications'],
+	permissions: ['storage', 'scripting', 'tabs', 'notifications', 'sidePanel'],
 	background: {
 		service_worker: 'background.js',
 		type: 'module',
@@ -46,10 +46,6 @@ const manifest = {
 	content_scripts: [
 		{
 			matches: ['http://*/*', 'https://*/*', '<all_urls>'],
-			js: ['content/index.iife.js'],
-		},
-		{
-			matches: ['http://*/*', 'https://*/*', '<all_urls>'],
 			js: ['content-ui/index.iife.js'],
 		},
 		{
@@ -63,6 +59,9 @@ const manifest = {
 			matches: ['*://*/*'],
 		},
 	],
+	side_panel: {
+		default_path: 'side-panel/index.html',
+	},
 } satisfies chrome.runtime.ManifestV3
 
 export default manifest

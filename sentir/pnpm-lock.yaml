@@ -239,6 +239,10 @@ importers:
         version: 4.19.3
 
   packages/shared:
+    dependencies:
+      sentir-common:
+        specifier: link:../../../sentir-common
+        version: link:../../../sentir-common
     devDependencies:
       '@extension/storage':
         specifier: workspace:*
@@ -307,37 +311,6 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
 
-  pages/content:
-    dependencies:
-      '@extension/env':
-        specifier: workspace:*
-        version: link:../../packages/env
-      '@extension/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
-      '@extension/storage':
-        specifier: workspace:*
-        version: link:../../packages/storage
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      sentir-common:
-        specifier: link:../../../sentir-common
-        version: link:../../../sentir-common
-    devDependencies:
-      '@extension/hmr':
-        specifier: workspace:*
-        version: link:../../packages/hmr
-      '@extension/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@extension/vite-config':
-        specifier: workspace:*
-        version: link:../../packages/vite-config
-      '@types/lodash':
-        specifier: ^4.17.16
-        version: 4.17.16
-
   pages/content-ui:
     dependencies:
       '@extension/env':
@@ -382,6 +355,31 @@ importers:
         version: 4.17.16
 
   pages/popup:
+    dependencies:
+      '@extension/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@extension/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@extension/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
+      '@extension/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+    devDependencies:
+      '@extension/tailwindcss-config':
+        specifier: workspace:*
+        version: link:../../packages/tailwind-config
+      '@extension/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@extension/vite-config':
+        specifier: workspace:*
+        version: link:../../packages/vite-config
+
+  pages/side-panel:
     dependencies:
       '@extension/i18n':
         specifier: workspace:*

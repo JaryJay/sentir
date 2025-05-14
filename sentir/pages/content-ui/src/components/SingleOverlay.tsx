@@ -80,7 +80,6 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 			letterSpacing: style.letterSpacing,
 			lineHeight: style.lineHeight,
 			transition: style.transition,
-			zIndex: style.zIndex,
 		}
 	}, [overlayable, lastVisualChangeTime])
 
@@ -124,7 +123,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		return (
 			<div
 				id={`sentir-overlay-${id}`}
-				className="fixed bg-[#14c8c81a] border-transparent overflow-hidden whitespace-pre-wrap"
+				className="fixed bg-[#14c8c81a] border-transparent overflow-hidden whitespace-pre-wrap z-10000"
 				style={overlayStyle}>
 				{overlayable.value}
 			</div>
@@ -134,7 +133,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 	return (
 		<div
 			id={`sentir-overlay-${id}`}
-			className="fixed bg-[#14c8c81a] border-transparent whitespace-pre-wrap"
+			className="fixed bg-[#14c8c81a] border-transparent whitespace-pre-wrap z-10000"
 			style={overlayStyle}>
 			<CompletionText
 				currentText={overlayable.value}

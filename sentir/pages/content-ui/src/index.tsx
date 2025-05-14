@@ -34,3 +34,13 @@ if (navigator.userAgent.includes('Firefox')) {
 
 shadowRoot.appendChild(rootIntoShadow)
 createRoot(rootIntoShadow).render(<App />)
+
+// Create a style element to create any needed styles for the DOM elements
+const styleElement = document.createElement('style')
+styleElement.innerHTML = `
+	.sentir-placeholder-transparent::-webkit-input-placeholder { color: transparent; }
+	.sentir-placeholder-transparent::-moz-placeholder { color: transparent; }
+	.sentir-placeholder-transparent:-ms-input-placeholder { color: transparent; }
+	.sentir-placeholder-transparent::placeholder { color: transparent; }
+`
+document.head.appendChild(styleElement)

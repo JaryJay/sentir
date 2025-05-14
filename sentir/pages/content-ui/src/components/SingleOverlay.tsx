@@ -80,7 +80,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 	/** When completions change, clear the overlayable's placeholder text */
 	useEffect(() => {
 		if (registeredOverlayable.completions.length > 0) {
-			overlayable.placeholder = ''
+			overlayable.classList.add('sentir-placeholder-transparent')
 		}
 	}, [registeredOverlayable.completions])
 

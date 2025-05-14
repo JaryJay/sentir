@@ -77,6 +77,13 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		}
 	}, [overlayable, onChange])
 
+	/** When completions change, clear the overlayable's placeholder text */
+	useEffect(() => {
+		if (registeredOverlayable.completions.length > 0) {
+			overlayable.placeholder = ''
+		}
+	}, [registeredOverlayable.completions])
+
 	/** When tab is pressed, accept the current completion */
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
@@ -140,10 +147,10 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 				{registeredOverlayable.completions.length === 0 ? (
 					overlayable.value
 				) : (
-			<CompletionText
-				currentText={overlayable.value}
-				completion={registeredOverlayable.completions[currentCompletionIdx]}
-			/>
+					<CompletionText
+						currentText={overlayable.value}
+						completion={registeredOverlayable.completions[currentCompletionIdx]}
+					/>
 				)}
 			</div>
 			{registeredOverlayable.completions.length > 0 && (

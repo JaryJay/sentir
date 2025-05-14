@@ -47,10 +47,10 @@ async function complete(req: Request): Promise<Response> {
 
   // TODO: Use cached system instruction
   const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash-lite",
+    model: "gemini-2.0-flash",
     contents: prompt,
     config: {
-      candidateCount: 2,
+      candidateCount: 1,
       systemInstruction,
       responseMimeType: "application/json",
       responseSchema,

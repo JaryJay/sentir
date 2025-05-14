@@ -1,26 +1,21 @@
 import { Overlayable } from '../types/index.js'
 export * from './string.js'
 
+// Noteably, we don't include password in this list, because it's a security risk to send the user's password to the server
+const allowedInputTypes = ['text', 'search', 'email', 'url', 'number', 'tel', 'color', 'date', 'time', 'month', 'week']
+
 export function isOverlayable(node: Node): node is Overlayable {
 	if (node instanceof HTMLTextAreaElement) {
+		if (node.readOnly || node.hasAttribute('readonly')) {
+			return false
+		}
 		return true
 	}
 	if (node instanceof HTMLInputElement) {
-		// Noteably, we don't include password in this list, because that's a security risk
-		return [
-			'text',
-			'search',
-			'email',
-			'url',
-			'number',
-			'tel',
-			'color',
-			'date',
-			'time',
-			'datetime-local',
-			'month',
-			'week',
-		].includes(node.type)
+		if (node.readOnly || node.hasAttribute('readonly')) {
+			return false
+		}
+		return allowedInputTypes.includes(node.type)
 	}
 	return false
 }

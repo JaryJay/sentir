@@ -46,7 +46,7 @@ export default function App() {
 					return o
 				}),
 			)
-		}, 100),
+		}, 200),
 		[],
 	)
 

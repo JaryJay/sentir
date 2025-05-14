@@ -10,7 +10,7 @@ root.classList.add('pointer-events-none', 'w-0')
 document.documentElement.append(root)
 
 const rootIntoShadow = document.createElement('div')
-rootIntoShadow.id = 'shadow-root'
+rootIntoShadow.id = 'sentir-shadow-root'
 rootIntoShadow.classList.add('pointer-events-none', 'w-0')
 
 const shadowRoot = root.attachShadow({ mode: 'open' })

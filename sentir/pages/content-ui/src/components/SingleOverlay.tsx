@@ -61,32 +61,6 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		return () => observer.disconnect()
 	}, [overlayable])
 
-	/** Inherit certain CSS properties from the overlayable */
-	const overlayStyle = useMemo<CSSProperties>(() => {
-		const style = window.getComputedStyle(overlayable)
-		const boundingRect = overlayable.getBoundingClientRect()
-		return {
-			top: `${boundingRect.top}px`,
-			left: `${boundingRect.left}px`,
-			width: `${boundingRect.width}px`,
-			height: `${boundingRect.height}px`,
-			padding: style.padding,
-			paddingInline: style.paddingInline,
-			paddingBlock: style.paddingBlock,
-			borderWidth: style.borderWidth,
-			borderStyle: style.borderStyle,
-			borderRadius: style.borderRadius,
-			color: style.color,
-			fontFamily: style.fontFamily,
-			fontSize: style.fontSize,
-			fontStyle: style.fontStyle,
-			fontWeight: style.fontWeight,
-			letterSpacing: style.letterSpacing,
-			lineHeight: style.lineHeight,
-			transition: style.transition,
-		}
-	}, [overlayable, lastVisualChangeTime])
-
 	/** Attach listeners to the overlayable input to detect focus and input events */
 	useEffect(() => {
 		const handleInput = () => onChange({ text: overlayable.value })
@@ -121,28 +95,63 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		return () => window.removeEventListener('keydown', handleKeyDown)
 	}, [registeredOverlayable, onChange])
 
-	if (!isVisible) return null
+	const positioningStyle = useMemo<CSSProperties>(() => {
+		const boundingRect = overlayable.getBoundingClientRect()
+		return {
+			top: `${boundingRect.top}px`,
+			left: `${boundingRect.left}px`,
+			width: `${boundingRect.width}px`,
+			height: `${boundingRect.height}px`,
+		}
+	}, [overlayable, lastVisualChangeTime])
 
-	if (registeredOverlayable.completions.length === 0) {
-		return (
-			<div
-				id={`sentir-overlay-${id}`}
-				className="fixed bg-[#14c8c81a] border-transparent overflow-hidden whitespace-pre-wrap z-10000"
-				style={overlayStyle}>
-				{overlayable.value}
-			</div>
-		)
-	}
+	/** Inherit certain CSS properties from the overlayable */
+	const inheritedStyle = useMemo<CSSProperties>(() => {
+		const style = window.getComputedStyle(overlayable)
+		return {
+			padding: style.padding,
+			paddingInline: style.paddingInline,
+			paddingBlock: style.paddingBlock,
+			borderWidth: style.borderWidth,
+			borderStyle: style.borderStyle,
+			borderRadius: style.borderRadius,
+			color: style.color,
+			fontFamily: style.fontFamily,
+			fontSize: style.fontSize,
+			fontStyle: style.fontStyle,
+			fontWeight: style.fontWeight,
+			letterSpacing: style.letterSpacing,
+			lineHeight: style.lineHeight,
+			transition: style.transition,
+		}
+	}, [overlayable, lastVisualChangeTime])
+
+	if (!isVisible) return null
 
 	return (
 		<div
 			id={`sentir-overlay-${id}`}
-			className="fixed bg-[#14c8c81a] border-transparent whitespace-pre-wrap z-10000"
-			style={overlayStyle}>
+			className="fixed bg-[#14c8c81a] whitespace-pre-wrap z-10000"
+			style={positioningStyle}>
+			<div
+				id={`sentir-overlay-content-${id}`}
+				className="border-transparent whitespace-pre-wrap overflow-hidden"
+				style={inheritedStyle}>
+				{registeredOverlayable.completions.length === 0 ? (
+					overlayable.value
+				) : (
 			<CompletionText
 				currentText={overlayable.value}
 				completion={registeredOverlayable.completions[currentCompletionIdx]}
 			/>
+				)}
+			</div>
+			{registeredOverlayable.completions.length > 0 && (
+				<CompletionFloatingBox
+					currentText={overlayable.value}
+					completion={registeredOverlayable.completions[currentCompletionIdx]}
+				/>
+			)}
 		</div>
 	)
 }
@@ -169,11 +178,6 @@ const CompletionText: React.FC<{
 					{currentText.slice(0, index)}
 					<span className="bg-red-400/30 rounded-xs">{currentText.slice(index, endIndex)}</span>
 					{currentText.slice(endIndex)}
-					{textToInsert && (
-						<div className="absolute left-[calc(100%+0.5rem)] top-0 min-w-40 max-w-64 px-2 py-1 border border-current/50 box-border">
-							<span className="bg-green-400/30 rounded-xs">{textToInsert}</span>
-						</div>
-					)}
 				</>
 			)
 		}
@@ -184,6 +188,26 @@ const CompletionText: React.FC<{
 			throw new Error(`Invalid text completion diff category`)
 		}
 	}
+}
+
+const CompletionFloatingBox: React.FC<{
+	currentText: string
+	completion: Completion
+}> = ({ currentText, completion }) => {
+	if (completion.completionType !== 'replace') {
+		return null
+	}
+
+	const { textToInsert, index, endIndex } = completion
+	if (!textToInsert) {
+		return null
+	}
+
+	return (
+		<div className="absolute left-[calc(100%+0.5rem)] top-0 min-w-40 max-w-64 px-2 py-1 border border-current/50 box-border">
+			<span className="bg-green-400/30 rounded-xs">{textToInsert}</span>
+		</div>
+	)
 }
 
 export default SingleOverlay

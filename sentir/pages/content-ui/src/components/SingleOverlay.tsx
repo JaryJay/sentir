@@ -116,9 +116,6 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 	const inheritedStyle = useMemo<CSSProperties>(() => {
 		const style = window.getComputedStyle(overlayable)
 		return {
-			padding: style.padding,
-			paddingInline: style.paddingInline,
-			paddingBlock: style.paddingBlock,
 			borderWidth: style.borderWidth,
 			borderStyle: style.borderStyle,
 			borderRadius: style.borderRadius,
@@ -127,9 +124,14 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 			fontSize: style.fontSize,
 			fontStyle: style.fontStyle,
 			fontWeight: style.fontWeight,
+			height: style.height,
 			letterSpacing: style.letterSpacing,
 			lineHeight: style.lineHeight,
+			padding: style.padding,
+			paddingInline: style.paddingInline,
+			paddingBlock: style.paddingBlock,
 			transition: style.transition,
+			width: style.width,
 		}
 	}, [overlayable, lastVisualChangeTime])
 
@@ -143,6 +145,8 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 			<div
 				id={`sentir-overlay-content-${id}`}
 				className="border-transparent whitespace-pre-wrap overflow-hidden"
+				contentEditable
+				aria-disabled
 				style={inheritedStyle}>
 				{registeredOverlayable.completions.length === 0 ? (
 					overlayable.value

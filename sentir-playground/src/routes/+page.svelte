@@ -4,7 +4,7 @@
 	let text3 = $state("");
 	let text4 = $state("");
 	let showInput2 = $state(true);
-	let showInput3 = $state(false);
+	let showInput3 = $state(true);
 </script>
 
 <svelte:head>
@@ -17,12 +17,12 @@
 	<textarea id="textarea-1" bind:value={text2} placeholder="Why are you applying for this job?"></textarea>
 	<button onclick={() => showInput2 = !showInput2} class="border p-2 rounded-md">Toggle Input 2</button>
 	{#if showInput2}
-		<input id="input-2" bind:value={text3} placeholder="What's the powerhouse of the cell?" />
+		<input id="input-2" bind:value={text3} class="align-top h-[36px] pt-4 pb-2 text-lg" placeholder="What's the powerhouse of the cell?" />
 	{/if}
 
 	<button onclick={() => showInput3 = !showInput3} class="border p-2 rounded-md">Toggle Input 3</button>
 	{#if showInput3}
-		<input id="input-3" bind:value={text4} placeholder="What's the meaning of life?" />
+		<input id="input-3" bind:value={text4} style:padding-inline="10px" placeholder="What's the meaning of life?" />
 	{/if}
 	<div class="flex flex-col justify-between h-[1200px] border border-gray-300 rounded-md">
 		Very tall div so that we can test scroll

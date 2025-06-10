@@ -3,7 +3,7 @@ import { CSSProperties, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 import { applyCompletion, Completion } from 'sentir-common'
 
-type SingleOverlayProps = {
+type SimpleOverlayProps = {
 	registeredOverlayable: RegisteredOverlayable
 	lastVisualChangeTime: number
 	onChange: (event: Partial<OverlayableChangeEvent>) => void
@@ -11,7 +11,11 @@ type SingleOverlayProps = {
 	onResize: () => void
 }
 
-const SingleOverlay: React.FC<SingleOverlayProps> = ({
+/**
+ * An overlay for input elements and textarea elements.
+ * This component renders the ghost text and the completion floating box.
+ */
+const SimpleOverlay: React.FC<SimpleOverlayProps> = ({
 	registeredOverlayable,
 	lastVisualChangeTime,
 	onChange,
@@ -166,6 +170,7 @@ const SingleOverlay: React.FC<SingleOverlayProps> = ({
 		</div>
 	)
 }
+SimpleOverlay.displayName = 'SimpleOverlay'
 
 const CompletionText: React.FC<{
 	currentText: string
@@ -200,6 +205,7 @@ const CompletionText: React.FC<{
 		}
 	}
 }
+CompletionText.displayName = 'CompletionText'
 
 const CompletionFloatingBox: React.FC<{
 	currentText: string
@@ -220,5 +226,6 @@ const CompletionFloatingBox: React.FC<{
 		</div>
 	)
 }
+CompletionFloatingBox.displayName = 'CompletionFloatingBox'
 
-export default SingleOverlay
+export default SimpleOverlay

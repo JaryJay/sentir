@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Overlayable, OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared/lib/types'
 import { isOverlayable, isRegistered } from '@extension/shared/lib/utils'
-import SingleOverlay from '@/components/SingleOverlay'
+import SimpleOverlay from '@/components/SimpleOverlay'
 import _ from 'lodash'
 import { getCompletions } from './logic/prompt'
 import { Completion } from 'sentir-common'
@@ -24,7 +24,7 @@ function registerOverlayable(overlayable: Overlayable, id: number): RegisteredOv
 
 export default function App() {
 	const [registeredOverlayables, setRegisteredOverlayables] = useState<RegisteredOverlayable[]>([])
-	/** The SingleOverlay components will re-render when this changes */
+	/** The SimpleOverlay components will re-render when this changes */
 	const [lastVisualChangeTime, setLastVisualChangeTime] = useState<number>(0)
 
 	const findCompletions = useCallback(
@@ -128,7 +128,7 @@ export default function App() {
 	return (
 		<>
 			{registeredOverlayables.map(registeredOverlayable => (
-				<SingleOverlay
+				<SimpleOverlay
 					key={registeredOverlayable.id}
 					registeredOverlayable={registeredOverlayable}
 					lastVisualChangeTime={lastVisualChangeTime}

@@ -2,6 +2,14 @@
 
 Cursor-like autocompletion for every web page.
 
+# Demo
+
+
+https://github.com/user-attachments/assets/cd201e95-1d31-4b30-914d-276166da7dd5
+
+
+# Development
+
 This repository is a **monorepo** that contains 3 related projects:
 - `sentir` is the browser extension
 - `sentir-api` is the backend

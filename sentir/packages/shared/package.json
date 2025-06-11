@@ -12,17 +12,17 @@
 	"main": "dist/index.mjs",
 	"scripts": {
 		"clean:bundle": "rimraf dist",
-		"clean:node_modules": "bunx rimraf node_modules",
+		"clean:node_modules": "pnpx rimraf node_modules",
 		"clean:turbo": "rimraf .turbo",
-		"clean": "bun clean:bundle && bun clean:node_modules && bun clean:turbo",
+		"clean": "pnpm clean:bundle && pnpm clean:node_modules && pnpm clean:turbo",
 		"ready": "tsc -b",
 		"lint": "eslint .",
-		"lint:fix": "bun lint --fix",
+		"lint:fix": "pnpm lint --fix",
 		"prettier": "prettier . --write --ignore-path ../../.prettierignore",
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
-		"sentir-common": "link:sentir-common"
+		"sentir-common": "link:../../../sentir-common"
 	},
 	"devDependencies": {
 		"@extension/storage": "workspace:*",

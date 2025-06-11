@@ -9,13 +9,13 @@
 		"dist/**"
 	],
 	"scripts": {
-		"clean:node_modules": "bunx rimraf node_modules",
+		"clean:node_modules": "pnpx rimraf node_modules",
 		"clean:turbo": "rimraf .turbo",
-		"clean": "bun clean:turbo && bun clean:node_modules",
+		"clean": "pnpm clean:turbo && pnpm clean:node_modules",
 		"build": "vite build",
 		"dev": "vite build --mode development",
 		"lint": "eslint .",
-		"lint:fix": "bun lint --fix",
+		"lint:fix": "pnpm lint --fix",
 		"prettier": "prettier . --write --ignore-path ../../.prettierignore",
 		"type-check": "tsc --noEmit"
 	},

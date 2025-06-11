@@ -5,5 +5,5 @@ bun install
 bun link
 cd ..
 
-bun --prefix ./sentir install
+pnpm --prefix ./sentir install
 bun --prefix ./sentir-api install

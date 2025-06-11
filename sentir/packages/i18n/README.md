@@ -10,16 +10,16 @@ If you want to use the i18n translation function in each pages, you need to add 
 
 ```json
 {
-	"dependencies": {
-		"@extension/i18n": "workspace:*"
-	}
+  "dependencies": {
+    "@extension/i18n": "workspace:*"
+  }
 }
 ```
 
 Then run the following command to install the package.
 
 ```bash
-bun install
+pnpm install
 ```
 
 ## Manage translations
@@ -30,9 +30,9 @@ You can manage translations in the `locales` directory.
 
 ```json
 {
-	"helloWorld": {
-		"message": "Hello, World!"
-	}
+  "helloWorld": {
+    "message": "Hello, World!"
+  }
 }
 ```
 
@@ -40,9 +40,9 @@ You can manage translations in the `locales` directory.
 
 ```json
 {
-	"helloWorld": {
-		"message": "안녕하세요, 여러분!"
-	}
+  "helloWorld": {
+    "message": "안녕하세요, 여러분!"
+  }
 }
 ```
 
@@ -57,9 +57,9 @@ Create folder inside `locales` with name from [languages](https://developer.chro
 Just import the `t` function and use it to translate the key.
 
 ```typescript
-import { t } from '@extension/i18n'
+import { t } from '@extension/i18n';
 
-console.log(t('loading')) // Loading...
+console.log(t('loading')); // Loading...
 ```
 
 ```typescript jsx
@@ -84,20 +84,20 @@ If you want to use placeholders, you can use the following format.
 
 ```json
 {
-	"greeting": {
-		"description": "Greeting message",
-		"message": "Hello, My name is $NAME$",
-		"placeholders": {
-			"name": {
-				"content": "$1",
-				"example": "John Doe"
-			}
-		}
-	},
-	"hello": {
-		"description": "Placeholder example",
-		"message": "Hello $1"
-	}
+  "greeting": {
+    "description": "Greeting message",
+    "message": "Hello, My name is $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "John Doe"
+      }
+    }
+  },
+  "hello": {
+    "description": "Placeholder example",
+    "message": "Hello $1"
+  }
 }
 ```
 
@@ -105,20 +105,20 @@ If you want to use placeholders, you can use the following format.
 
 ```json
 {
-	"greeting": {
-		"description": "인사 메시지",
-		"message": "안녕하세요, 제 이름은 $NAME$입니다.",
-		"placeholders": {
-			"name": {
-				"content": "$1",
-				"example": "서종학"
-			}
-		}
-	},
-	"hello": {
-		"description": "Placeholder 예시",
-		"message": "안녕 $1"
-	}
+  "greeting": {
+    "description": "인사 메시지",
+    "message": "안녕하세요, 제 이름은 $NAME$입니다.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "서종학"
+      }
+    }
+  },
+  "hello": {
+    "description": "Placeholder 예시",
+    "message": "안녕 $1"
+  }
 }
 ```
 
@@ -127,14 +127,14 @@ If you want to replace the placeholder, you can pass the value as the second arg
 Function `t` has exactly the same interface as the `chrome.i18n.getMessage` function.
 
 ```typescript
-import { t } from '@extension/i18n'
+import { t } from '@extension/i18n';
 
-console.log(t('greeting', 'John Doe')) // Hello, My name is John Doe
-console.log(t('greeting', ['John Doe'])) // Hello, My name is John Doe
+console.log(t('greeting', 'John Doe')); // Hello, My name is John Doe
+console.log(t('greeting', ['John Doe'])); // Hello, My name is John Doe
 
-console.log(t('hello')) // Hello
-console.log(t('hello', 'World')) // Hello World
-console.log(t('hello', ['World'])) // Hello World
+console.log(t('hello')); // Hello
+console.log(t('hello', 'World')); // Hello World
+console.log(t('hello', ['World'])); // Hello World
 ```
 
 ### Locale setting on development
@@ -149,9 +149,9 @@ When you forget to add a key to all language's `messages.json` files, you will g
 
 ```json
 {
-	"hello": {
-		"message": "Hello World!"
-	}
+  "hello": {
+    "message": "Hello World!"
+  }
 }
 ```
 
@@ -159,15 +159,15 @@ When you forget to add a key to all language's `messages.json` files, you will g
 
 ```json
 {
-	"helloWorld": {
-		"message": "안녕하세요, 여러분!"
-	}
+  "helloWorld": {
+    "message": "안녕하세요, 여러분!"
+  }
 }
 ```
 
 ```typescript
-import { t } from '@extension/i18n'
+import { t } from '@extension/i18n';
 
 // Error: TS2345: Argument of type "hello" is not assignable to parameter of type
-console.log(t('hello'))
+console.log(t('hello'));
 ```

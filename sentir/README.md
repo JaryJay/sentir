@@ -1,5 +1,4 @@
 # Sentir
-
 Cursor-like autocompletion for every web page.
 
 ## Table of Contents
@@ -7,18 +6,18 @@ Cursor-like autocompletion for every web page.
 - [Intro](#intro)
 - [Features](#features)
 - [Structure](#structure)
-  - [ChromeExtension](#structure-chrome-extension)
-  - [Packages](#structure-packages)
-  - [Pages](#structure-pages)
+    - [ChromeExtension](#structure-chrome-extension)
+    - [Packages](#structure-packages)
+    - [Pages](#structure-pages)
 - [Getting started](#getting-started)
-  - [Chrome](#getting-started-chrome)
-  - [Firefox](#getting-started-firefox)
+    - [Chrome](#getting-started-chrome)
+    - [Firefox](#getting-started-firefox)
 - [Install dependency](#install-dependency)
-  - [For root](#install-dependency-for-root)
-  - [For module](#install-dependency-for-module)
+    - [For root](#install-dependency-for-root)
+    - [For module](#install-dependency-for-module)
 - [Environment variables](#env-variables)
-  - [Add new](#env-variables-new)
-  - [Set via CLI](#env-variables-cli-set)
+    - [Add new](#env-variables-new)
+    - [Set via CLI](#env-variables-cli-set)
 - [Reference](#reference)
 
 ## Intro
@@ -42,29 +41,27 @@ This project is a browser extension using React and Typescript. It's built using
 ## Getting started
 
 1. When you're using Windows run this:
-
-   - `git config --global core.eol lf`
-   - `git config --global core.autocrlf input`
+    - `git config --global core.eol lf`
+    - `git config --global core.autocrlf input`
 
    **This will set the EOL (End of line) character to be the same as on Linux/macOS. Without this, our bash script won't
    work, and you will have conflicts with developers on Linux/macOS.**
-
-2. Clone this repository.( `git clone https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite` )
+2. Clone this repository.( ```git clone https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite``` )
 3. Ensure your node version is >= than in `.nvmrc` file, recommend to
    use [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#intro)
 4. Edit `/packages/i18n/locales/`{your locale(s)}/`messages.json`
 5. In the objects `extensionDescription` and `extensionName`, change the `message` fields (leave `description` alone)
 6. In `/.package.json`, change the `version` to the desired version of your extension.
-7. Install bun globally: `npm install -g bun` (ensure your node version >= 22.12.0)
-8. Run `bun install`
+7. Install pnpm globally: `npm install -g pnpm` (ensure your node version >= 22.12.0)
+8. Run `pnpm install`
 
 Then, depending on the target browser:
 
 ### For Chrome: <a name="getting-started-chrome"></a>
 
 1. Run:
-   - Dev: `bun dev`
-   - Prod: `bun build`
+    - Dev: `pnpm dev`
+    - Prod: `pnpm build`
 2. Open in browser - `chrome://extensions`
 3. Check - <kbd>Developer mode</kbd>
 4. Click - <kbd>Load unpacked</kbd> in the upper left corner
@@ -73,8 +70,8 @@ Then, depending on the target browser:
 ### For Firefox: <a name="getting-started-firefox"></a>
 
 1. Run:
-   - Dev: `bun dev:firefox`
-   - Prod: `bun build:firefox`
+    - Dev: `pnpm dev:firefox`
+    - Prod: `pnpm build:firefox`
 2. Open in browser - `about:debugging#/runtime/this-firefox`
 3. Click - <kbd>Load Temporary Add-on...</kbd> in the upper right corner
 4. Select the `./dist/manifest.json` file from the boilerplate project
@@ -87,11 +84,11 @@ Then, depending on the target browser:
 
 ### For root: <a name="install-dependency-for-root"></a>
 
-1. Run `bun i <package> -w`
+1. Run `pnpm i <package> -w`
 
 ### For module: <a name="install-dependency-for-module"></a>
 
-1. Run `bun i <package> -F <module name>`
+1. Run `pnpm i <package> -F <module name>`
 
 `package` - Name of the package you want to install e.g. `nodemon` \
 `module-name` - You can find it inside each `package.json` under the key `name`, e.g. `@extension/content-script`, you
@@ -100,7 +97,7 @@ can use only `content-script` without `@extension/` prefix
 ## How do I disable modules I'm not using?
 
 ```bash
-$ bun module-manager
+$ pnpm module-manager
 ```
 
 Read: [Module Manager](packages/module-manager/README.md)
@@ -174,10 +171,10 @@ Some shared packages:
 
 Other useful packages:
 
-- `zipper` - run `bun zip` to pack the `dist` folder into `extension-YYYYMMDD-HHmmss.zip` inside the newly created
+- `zipper` - run `pnpm zip` to pack the `dist` folder into `extension-YYYYMMDD-HHmmss.zip` inside the newly created
   `dist-zip`
-- `module-manager` - run `bun module-manager` to enable/disable modules
-- `e2e` - run `bun e2e` for end-to-end tests of your zipped extension on different browsers
+- `module-manager` - run `pnpm module-manager` to enable/disable modules
+- `e2e` - run `pnpm e2e` for end-to-end tests of your zipped extension on different browsers
 
 ## Troubleshooting
 
@@ -185,11 +182,11 @@ Other useful packages:
 
 If saving source files doesn't cause the extension HMR code to trigger a reload of the browser page, try this:
 
-1. Ctrl+C the development server and restart it (`bun run dev`)
+1. Ctrl+C the development server and restart it (`pnpm run dev`)
 2. If you get a [`grpc` error](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/issues/612),
    [kill the
    `turbo` process](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/issues/612#issuecomment-2518982339)
-   and run `bun dev` again.
+   and run `pnpm dev` again.
 
 ## Reference
 
@@ -198,3 +195,4 @@ If saving source files doesn't cause the extension HMR code to trigger a reload 
 - [Rollup](https://rollupjs.org/guide/en/)
 - [Turborepo](https://turbo.build/repo/docs)
 - [Rollup-plugin-chrome-extension](https://www.extend-chrome.dev/rollup-plugin)
+

@@ -3,6 +3,7 @@ import { PROCESS_ENV } from "@/utils/env";
 import { options } from "@/utils/options";
 import { Completion, CompletionsResponse, PromptRequest } from "sentir-common";
 import { RawCompletionResponse } from "@/types";
+import { ZodError } from "zod";
 
 const ai = new GoogleGenAI({ apiKey: PROCESS_ENV.GEMINI_API_KEY });
 const systemInstruction = await Bun.file("./res/system_instruction.md").text();
@@ -47,7 +48,7 @@ async function complete(req: Request): Promise<Response> {
 
   // TODO: Use cached system instruction
   const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.0-flash-lite",
     contents: prompt,
     config: {
       candidateCount: 1,
@@ -64,8 +65,7 @@ async function complete(req: Request): Promise<Response> {
     });
   }
 
-  console.dir(response, { depth: null });
-
+  try {
   const rawCompletions = (
     response.candidates
       ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
@@ -74,10 +74,34 @@ async function complete(req: Request): Promise<Response> {
 
   const completions = processRawCompletions(rawCompletions, request);
 
+    console.dir(
+      {
+        input: request.inputText,
+        completions,
+      },
+      { depth: null }
+    );
+
   return new Response(
     JSON.stringify({ completions, timestamp } satisfies CompletionsResponse),
     { status: 200 }
   );
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return new Response(
+        JSON.stringify({
+          message: "Completion parse error. Please try again.",
+        }),
+        { status: 500 }
+      );
+    }
+    return new Response(
+      JSON.stringify({
+        message: "Unknown error: " + (error as Error).message,
+      }),
+      { status: 500 }
+    );
+  }
 }
 
 function constructPrompt(request: PromptRequest) {

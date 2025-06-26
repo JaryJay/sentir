@@ -150,7 +150,7 @@ const SimpleOverlay: React.FC<SimpleOverlayProps> = ({
 	return (
 		<div
 			id={`sentir-overlay-${id}`}
-			className="fixed bg-[#14c8c81a] whitespace-pre-wrap z-10000"
+			className="fixed bg-[#14c8c805] whitespace-pre-wrap z-10000"
 			style={positioningStyle}>
 			<div
 				id={`sentir-overlay-content-${id}`}

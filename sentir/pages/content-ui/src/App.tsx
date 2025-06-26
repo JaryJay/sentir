@@ -5,6 +5,7 @@ import SimpleOverlay from '@/components/SimpleOverlay'
 import _ from 'lodash'
 import { getCompletions } from './logic/prompt'
 import { Completion } from 'sentir-common'
+import { smartApplyChanges } from './logic/change'
 
 function registerOverlayable(overlayable: Overlayable, id: number): RegisteredOverlayable {
 	if (isRegistered(overlayable)) {
@@ -109,7 +110,7 @@ export default function App() {
 
 	const onOverlayableChange = useCallback(
 		(registeredOverlayable: RegisteredOverlayable, change: Partial<OverlayableChangeEvent>) => {
-			const changedOverlayable = { ...registeredOverlayable, ...change }
+			const changedOverlayable = smartApplyChanges(registeredOverlayable, change)
 			// If the text has changed, or the overlayable is focused and has no completions
 			if (change.text !== undefined || (change.focused && registeredOverlayable.completions.length === 0)) {
 				void findCompletions(changedOverlayable)

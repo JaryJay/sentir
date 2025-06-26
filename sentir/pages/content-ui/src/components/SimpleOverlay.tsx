@@ -96,7 +96,13 @@ const SimpleOverlay: React.FC<SimpleOverlayProps> = ({
 				const oldText = overlayable.value
 				const completion = registeredOverlayable.completions[currentCompletionIdx]
 				const newText = applyCompletion(oldText, completion)
+				if (newText.startsWith(oldText)) {
+					// Using execCommand to insert text allows user to ctrl-z to undo the suggestion
+					document.execCommand('insertText', false, newText.substring(oldText.length))
+				} else {
 				overlayable.value = newText
+				}
+				overlayable.onchange?.(new Event('change'))
 				console.log('Completion accepted. Clearing completions 1')
 				onChange({ text: newText })
 				onCompletionAccept(completion)

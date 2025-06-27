@@ -44,7 +44,6 @@ async function complete(req: Request): Promise<Response> {
 
   const prompt = constructPrompt(request);
 
-  const timestamp = Date.now();
 
   // TODO: Use cached system instruction
   const response = await ai.models.generateContent({
@@ -83,7 +82,7 @@ async function complete(req: Request): Promise<Response> {
     );
 
   return new Response(
-    JSON.stringify({ completions, timestamp } satisfies CompletionsResponse),
+    JSON.stringify({ completions, timestamp: request.timestamp } satisfies CompletionsResponse),
     { status: 200 }
   );
   } catch (error) {

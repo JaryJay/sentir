@@ -6,6 +6,7 @@ export const PromptRequest = z.object({
   label: z.string().nullish(),
   placeholder: z.string().nullish(),
   surroundingText: z.array(z.string()),
+  timestamp: z.number().int().nonnegative(),
 });
 export type PromptRequest = z.infer<typeof PromptRequest>;
 

@@ -36,11 +36,13 @@ export default function App() {
 				surroundingText: [],
 				placeholder: registeredOverlayable.overlayable.placeholder,
 				label: registeredOverlayable.overlayable.labels?.[0]?.textContent,
+				timestamp: Date.now(),
 			})
 			setRegisteredOverlayables(prev =>
 				prev.map(o => {
 					if (o.id !== registeredOverlayable.id) return o
-					// Only update the completions if the timestamp is newer
+					// Only update the completions if the received timestamp is newer than the currently stored one.
+					// This prevents older, delayed responses from overwriting newer, more relevant completions.
 					if (completionsTimestamp > o.completionsTimestamp) {
 						return { ...o, completions, completionsTimestamp }
 					}

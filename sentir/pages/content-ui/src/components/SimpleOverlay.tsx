@@ -100,7 +100,7 @@ const SimpleOverlay: React.FC<SimpleOverlayProps> = ({
 					// Using execCommand to insert text allows user to ctrl-z to undo the suggestion
 					document.execCommand('insertText', false, newText.substring(oldText.length))
 				} else {
-				overlayable.value = newText
+					overlayable.value = newText
 				}
 				overlayable.onchange?.(new Event('change'))
 				console.log('Completion accepted. Clearing completions 1')

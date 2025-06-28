@@ -41,12 +41,12 @@ async function complete(req: Request): Promise<Response> {
     });
   }
   const request: PromptRequest = parsed.data;
-
   const prompt = constructPrompt(request);
 
+  const timestamp = request.timestamp;
 
   // TODO: Use cached system instruction
-  const response = await ai.models.generateContent({
+  const aiResponse = await ai.models.generateContent({
     model: "gemini-2.0-flash-lite",
     contents: prompt,
     config: {
@@ -58,20 +58,20 @@ async function complete(req: Request): Promise<Response> {
     },
   });
 
-  if (!response.text) {
+  if (!aiResponse.text) {
     return new Response(JSON.stringify({ error: "No response from AI" }), {
       status: 500,
     });
   }
 
   try {
-  const rawCompletions = (
-    response.candidates
-      ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
-      .filter((s) => s !== undefined) ?? [response.text]
-  ).map((text) => RawCompletionResponse.parse(JSON.parse(text)));
+    const rawCompletions = (
+      aiResponse.candidates
+        ?.map((c) => c.content?.parts?.map((p) => p.text)?.join(""))
+        .filter((s) => s !== undefined) ?? [aiResponse.text]
+    ).map((text) => RawCompletionResponse.parse(JSON.parse(text)));
 
-  const completions = processRawCompletions(rawCompletions, request);
+    const completions = processRawCompletions(rawCompletions, request);
 
     console.dir(
       {
@@ -81,10 +81,8 @@ async function complete(req: Request): Promise<Response> {
       { depth: null }
     );
 
-  return new Response(
-    JSON.stringify({ completions, timestamp: request.timestamp } satisfies CompletionsResponse),
-    { status: 200 }
-  );
+    const response: CompletionsResponse = { completions, timestamp };
+    return new Response(JSON.stringify(response), { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
       return new Response(
@@ -95,9 +93,7 @@ async function complete(req: Request): Promise<Response> {
       );
     }
     return new Response(
-      JSON.stringify({
-        message: "Unknown error: " + (error as Error).message,
-      }),
+      JSON.stringify({ message: "Unknown error: " + (error as Error).message }),
       { status: 500 }
     );
   }

@@ -23,9 +23,44 @@ export function smartApplyChanges(
 		.filter(c => shouldKeepCompletion(c, oldText, newText))
 		.map(c => changeCompletion(c, oldText, newText))
 
-	console.dir(JSON.parse(JSON.stringify({ overlayable, change, newCompletions })))
-
 	return { ...overlayable, completions: newCompletions, text: newText }
+}
+
+export function smartMergeCompletionsIntoUpdatedOverlayable(
+	oldOverlayable: RegisteredOverlayable,
+	newOverlayable: RegisteredOverlayable,
+	completions: Completion[],
+	timestamp: number,
+): RegisteredOverlayable {
+	// If we already have more up-to-date completions, then we don't bother changing them
+	if (newOverlayable.completionsTimestamp > timestamp) return newOverlayable
+
+	// First we put in the completions as if the overlayable hasn't updated yet:
+	const oldWithCompletions: RegisteredOverlayable = { ...oldOverlayable, completions }
+	// Then we use smartApplyChanges to update the completions when the text changes:
+	const { completions: updatedCompletions } = smartApplyChanges(oldWithCompletions, { text: newOverlayable.text })
+
+	if (newOverlayable.text !== oldOverlayable.text) {
+		console.log('Merged completions into overlayable')
+		console.log({
+			oldOverlayable,
+			newOverlayable,
+			completions,
+			timestamp,
+			result: {
+				...newOverlayable,
+				completions: updatedCompletions.concat(newOverlayable.completions),
+				completionsTimestamp: timestamp,
+			},
+		})
+	}
+
+	// Finally we concat the current overlayable completions at the end (which will usually be empty)
+	return {
+		...newOverlayable,
+		completions: updatedCompletions.concat(newOverlayable.completions),
+		completionsTimestamp: timestamp,
+	}
 }
 
 function shouldKeepCompletion(completion: Completion, oldText: string, newText: string): boolean {

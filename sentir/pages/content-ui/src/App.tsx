@@ -5,7 +5,7 @@ import SimpleOverlay from '@/components/SimpleOverlay'
 import _ from 'lodash'
 import { getCompletions } from './logic/prompt'
 import { Completion } from 'sentir-common'
-import { smartApplyChanges } from './logic/change'
+import { smartApplyChanges, smartMergeCompletionsIntoUpdatedOverlayable } from './logic/change'
 
 function registerOverlayable(overlayable: Overlayable, id: number): RegisteredOverlayable {
 	if (isRegistered(overlayable)) {
@@ -30,24 +30,21 @@ export default function App() {
 
 	const findCompletions = useCallback(
 		_.throttle(async (registeredOverlayable: RegisteredOverlayable) => {
-			const { completions, timestamp: completionsTimestamp } = await getCompletions({
+			const { completions, timestamp } = await getCompletions({
 				inputText: registeredOverlayable.text,
 				url: window.location.origin + window.location.pathname,
-				surroundingText: [],
+				surroundingText: [], // TODO: Get surrounding text from DOM
 				placeholder: registeredOverlayable.overlayable.placeholder,
 				label: registeredOverlayable.overlayable.labels?.[0]?.textContent,
 				timestamp: Date.now(),
 			})
+			const oldOverlayable = registeredOverlayable
 			setRegisteredOverlayables(prev =>
-				prev.map(o => {
-					if (o.id !== registeredOverlayable.id) return o
-					// Only update the completions if the received timestamp is newer than the currently stored one.
-					// This prevents older, delayed responses from overwriting newer, more relevant completions.
-					if (completionsTimestamp > o.completionsTimestamp) {
-						return { ...o, completions, completionsTimestamp }
-					}
-					return o
-				}),
+				prev.map(o =>
+					o.id === oldOverlayable.id
+						? smartMergeCompletionsIntoUpdatedOverlayable(oldOverlayable, o, completions, timestamp)
+						: o,
+				),
 			)
 		}, 250),
 		[],

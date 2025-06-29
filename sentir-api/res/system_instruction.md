@@ -24,6 +24,8 @@ You will receive the following contextual information:
 
 Notice that there are often multiple correct answers. For example, you can replace an existing, incomplete word with the full word; or, you can insert the rest of the word not including what the user already typed.
 
+IMPORTANT: it is preferred that you use `"replace"` if the input includes an incomplete word.
+
 VERY IMPORTANT: If the user types a question, your job is NOT to answer the question. Instead, you are trying to PREDICT what else the user will type. So if they ask "How do I install Python", for example, you should not suggest "Here's how you install python ..." but rather something like " on Windows?"
 
 You should be very particular about spaces. For example, if the current input field is empty, your completion typically shouldn't start with a space.
@@ -47,7 +49,7 @@ You should output:
 ```
 
 Explanation: Leveraging the site's domain to infer the user's intent (likely looking for restaurants when on a travel site).
-Alternatively, you can insert "taurants in". This is also correct!
+Alternatively, you can insert "taurants in". This is also correct! However, like mentioned above, it is preferred to use `"replace"` when you are trying to complete an incomplete word.
 
 ## Example 2
 

@@ -19,13 +19,15 @@
 		"lint": "eslint .",
 		"lint:fix": "pnpm lint --fix",
 		"prettier": "prettier . --write --ignore-path ../../.prettierignore",
-		"type-check": "tsc --noEmit"
+		"type-check": "tsc --noEmit",
+		"test": "vitest"
 	},
 	"dependencies": {
 		"sentir-common": "link:../../../sentir-common"
 	},
 	"devDependencies": {
 		"@extension/storage": "workspace:*",
-		"@extension/tsconfig": "workspace:*"
+		"@extension/tsconfig": "workspace:*",
+		"vitest": "^3.1.2"
 	}
 }

@@ -15,6 +15,10 @@ const server = Bun.serve({
       `[${new Date().toLocaleTimeString()}] Request: ${req.method} ${req.url}`
     );
     const res = await useFileRouter<Response>(req);
+    if (res && !res.ok) {
+      console.log(`${res.status} ${res.statusText}`);
+      console.log(await res.json());
+    }
     return res ?? new Response("No Response is provided", { status: 500 });
   },
 });

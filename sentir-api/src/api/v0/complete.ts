@@ -85,6 +85,8 @@ async function complete(req: Request): Promise<Response> {
     return new Response(JSON.stringify(response), { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
+      console.dir(aiResponse, { depth: null });
+      console.log(error.message);
       return new Response(
         JSON.stringify({
           message: "Completion parse error. Please try again.",

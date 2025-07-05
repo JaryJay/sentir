@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Overlayable, OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared/lib/types'
-import { isOverlayable, isRegistered } from '@extension/shared/lib/utils'
+import {
+	isOverlayable,
+	isRegistered,
+	Overlayable,
+	OverlayableChangeEvent,
+	RegisteredOverlayable,
+	smartApplyChanges,
+	smartMergeCompletionsIntoUpdatedOverlayable,
+} from '@extension/shared'
 import SimpleOverlay from '@/components/SimpleOverlay'
 import _ from 'lodash'
 import { getCompletions } from './logic/prompt'
 import { Completion } from 'sentir-common'
-import { smartApplyChanges, smartMergeCompletionsIntoUpdatedOverlayable } from './logic/change'
 
 function registerOverlayable(overlayable: Overlayable, id: number): RegisteredOverlayable {
 	if (isRegistered(overlayable)) {

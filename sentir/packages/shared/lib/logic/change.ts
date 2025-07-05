@@ -1,4 +1,4 @@
-import { OverlayableChangeEvent, RegisteredOverlayable } from '@extension/shared'
+import { OverlayableChangeEvent, RegisteredOverlayable } from '../types/index.js'
 import { Completion } from 'sentir-common'
 
 /**
@@ -20,8 +20,8 @@ export function smartApplyChanges(
 	const oldText = overlayable.text
 
 	const newCompletions = overlayable.completions
-		.filter(c => shouldKeepCompletion(c, oldText, newText))
-		.map(c => changeCompletion(c, oldText, newText))
+		.filter((c: Completion) => shouldKeepCompletion(c, oldText, newText))
+		.map((c: Completion) => changeCompletion(c, oldText, newText))
 
 	return { ...overlayable, completions: newCompletions, text: newText }
 }

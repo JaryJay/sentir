@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { smartApplyChanges, smartMergeCompletionsIntoUpdatedOverlayable } from '@extension/shared'
-import type { RegisteredOverlayable, OverlayableChangeEvent } from '@extension/shared'
+import { smartApplyChanges, smartMergeCompletionsIntoUpdatedOverlayable } from '..'
+import type { RegisteredOverlayable, OverlayableChangeEvent } from '..'
 import type { Completion } from 'sentir-common'
 
 // Mock HTML element for testing

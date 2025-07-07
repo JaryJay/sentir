@@ -1,4 +1,5 @@
 # Sentir
+
 Cursor-like autocompletion for every web page.
 
 ## Table of Contents
@@ -6,18 +7,19 @@ Cursor-like autocompletion for every web page.
 - [Intro](#intro)
 - [Features](#features)
 - [Structure](#structure)
-    - [ChromeExtension](#structure-chrome-extension)
-    - [Packages](#structure-packages)
-    - [Pages](#structure-pages)
+  - [ChromeExtension](#chrome-extension)
+  - [Packages](#packages)
+  - [Pages](#pages)
 - [Getting started](#getting-started)
-    - [Chrome](#getting-started-chrome)
-    - [Firefox](#getting-started-firefox)
-- [Install dependency](#install-dependency)
-    - [For root](#install-dependency-for-root)
-    - [For module](#install-dependency-for-module)
-- [Environment variables](#env-variables)
-    - [Add new](#env-variables-new)
-    - [Set via CLI](#env-variables-cli-set)
+  - [Chrome](#for-chrome)
+  - [Firefox](#for-firefox)
+- [Install dependency](#install-dependency-for-turborepo)
+  - [For root](#install-dependency-for-root)
+  - [For module](#install-dependency-for-module)
+- [Testing](#testing)
+- [Environment variables](#environment-variables)
+  - [Add new](#env-variables-new)
+  - [Set via CLI](#env-variables-cli-set)
 - [Reference](#reference)
 
 ## Intro
@@ -41,12 +43,14 @@ This project is a browser extension using React and Typescript. It's built using
 ## Getting started
 
 1. When you're using Windows run this:
-    - `git config --global core.eol lf`
-    - `git config --global core.autocrlf input`
+
+   - `git config --global core.eol lf`
+   - `git config --global core.autocrlf input`
 
    **This will set the EOL (End of line) character to be the same as on Linux/macOS. Without this, our bash script won't
    work, and you will have conflicts with developers on Linux/macOS.**
-2. Clone this repository.( ```git clone https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite``` )
+
+2. Clone this repository.( `git clone https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite` )
 3. Ensure your node version is >= than in `.nvmrc` file, recommend to
    use [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#intro)
 4. Edit `/packages/i18n/locales/`{your locale(s)}/`messages.json`
@@ -57,21 +61,21 @@ This project is a browser extension using React and Typescript. It's built using
 
 Then, depending on the target browser:
 
-### For Chrome: <a name="getting-started-chrome"></a>
+### For Chrome:
 
 1. Run:
-    - Dev: `pnpm dev`
-    - Prod: `pnpm build`
+   - Dev: `pnpm dev`
+   - Prod: `pnpm build`
 2. Open in browser - `chrome://extensions`
 3. Check - <kbd>Developer mode</kbd>
 4. Click - <kbd>Load unpacked</kbd> in the upper left corner
 5. Select the `dist` directory from the boilerplate project
 
-### For Firefox: <a name="getting-started-firefox"></a>
+### For Firefox:
 
 1. Run:
-    - Dev: `pnpm dev:firefox`
-    - Prod: `pnpm build:firefox`
+   - Dev: `pnpm dev:firefox`
+   - Prod: `pnpm build:firefox`
 2. Open in browser - `about:debugging#/runtime/this-firefox`
 3. Click - <kbd>Load Temporary Add-on...</kbd> in the upper right corner
 4. Select the `./dist/manifest.json` file from the boilerplate project
@@ -80,7 +84,7 @@ Then, depending on the target browser:
 > In Firefox, you load add-ons in temporary mode. That means they'll disappear after each browser close. You have to
 > load the add-on on every browser launch.
 
-## Install dependency for turborepo: <a name="install-dependency"></a>
+## Install dependency for turborepo:
 
 ### For root: <a name="install-dependency-for-root"></a>
 
@@ -102,13 +106,29 @@ $ pnpm module-manager
 
 Read: [Module Manager](packages/module-manager/README.md)
 
+## Testing
+
+To run unit tests:
+
+```bash
+pnpm test
+```
+
+You can also use
+
+```bash
+pnpm test:watch
+```
+
+if you want the tests to rerun whenever the test files change.
+
 ## Environment variables
 
 Read: [Env Documentation](packages/env/README.md)
 
-## Boilerplate structure <a name="structure"></a>
+## Structure
 
-### Chrome extension <a name="structure-chrome-extension"></a>
+### Chrome extension
 
 The extension lives in the `chrome-extension` directory and includes the following files:
 
@@ -123,7 +143,7 @@ The extension lives in the `chrome-extension` directory and includes the followi
 > [Declaring permissions](https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions)
 > and edit `manifest.js` accordingly.
 
-### Pages <a name="structure-pages"></a>
+### Pages
 
 Code that is transpiled to be part of the extension lives in the [pages](pages/) directory.
 
@@ -154,7 +174,7 @@ Code that is transpiled to be part of the extension lives in the [pages](pages/)
   `side-panel`](pages/side-panel/) - [sidepanel (Chrome 114+)](https://developer.chrome.com/docs/extensions/reference/api/sidePanel)
   (`side_panel.default_path` in manifest.json)
 
-### Packages <a name="structure-packages"></a>
+### Packages
 
 Some shared packages:
 
@@ -195,4 +215,3 @@ If saving source files doesn't cause the extension HMR code to trigger a reload 
 - [Rollup](https://rollupjs.org/guide/en/)
 - [Turborepo](https://turbo.build/repo/docs)
 - [Rollup-plugin-chrome-extension](https://www.extend-chrome.dev/rollup-plugin)
-

@@ -11,7 +11,7 @@ const createMockOverlayable = (): HTMLInputElement => {
 		blur: () => {},
 		select: () => {},
 		setSelectionRange: () => {},
-	} as HTMLInputElement
+	} as unknown as HTMLInputElement
 }
 
 const createMockRegisteredOverlayable = (
@@ -34,10 +34,7 @@ describe('smartApplyChanges', () => {
 
 		const result = smartApplyChanges(overlayable, change)
 
-		expect(result).toEqual({
-			...overlayable,
-			focused: false,
-		})
+		expect(result).toEqual({ ...overlayable, focused: false })
 	})
 
 	it('should filter and update completions when text changes', () => {
@@ -47,16 +44,11 @@ describe('smartApplyChanges', () => {
 		]
 		const overlayable = createMockRegisteredOverlayable('hello', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'hello world' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		expect(result.text).toBe('hello world')
 		expect(result.completions).toHaveLength(1)
-		expect(result.completions[0]).toEqual({
-			completionType: 'insert',
-			textToInsert: '',
-			index: 11,
-		})
+		expect(result.completions[0]).toEqual({ completionType: 'insert', textToInsert: '', index: 11 })
 	})
 
 	it('should handle noop completions correctly', () => {
@@ -66,7 +58,6 @@ describe('smartApplyChanges', () => {
 		]
 		const overlayable = createMockRegisteredOverlayable('', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'new' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		expect(result.completions).toHaveLength(1)
@@ -77,7 +68,6 @@ describe('smartApplyChanges', () => {
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: 'world', index: 5 }]
 		const overlayable = createMockRegisteredOverlayable('hello', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'hello wo' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		// The completion should be filtered out because the text structure doesn't match
@@ -89,9 +79,7 @@ describe('smartApplyChanges', () => {
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: 'world', index: 5 }]
 		const overlayable = createMockRegisteredOverlayable('hello', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'hello orld' }
-
 		const result = smartApplyChanges(overlayable, change)
-
 		// The completion should be filtered out because the text structure doesn't match
 		expect(result.completions).toHaveLength(0)
 	})
@@ -100,9 +88,7 @@ describe('smartApplyChanges', () => {
 		const completions: Completion[] = [{ completionType: 'replace', textToInsert: 'there', index: 0, endIndex: 5 }]
 		const overlayable = createMockRegisteredOverlayable('hello', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'there world' }
-
 		const result = smartApplyChanges(overlayable, change)
-
 		// The completion should be filtered out because the text structure doesn't match
 		expect(result.completions).toHaveLength(0)
 	})
@@ -111,7 +97,6 @@ describe('smartApplyChanges', () => {
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: 'world', index: 5 }]
 		const overlayable = createMockRegisteredOverlayable('hello', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'goodbye' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		expect(result.completions).toHaveLength(0)
@@ -123,7 +108,6 @@ describe('smartMergeCompletionsIntoUpdatedOverlayable', () => {
 		const oldOverlayable = createMockRegisteredOverlayable('hello', [], 100)
 		const newOverlayable = createMockRegisteredOverlayable('hello world', [], 200)
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: 'test', index: 0 }]
-
 		const result = smartMergeCompletionsIntoUpdatedOverlayable(
 			oldOverlayable,
 			newOverlayable,
@@ -133,12 +117,10 @@ describe('smartMergeCompletionsIntoUpdatedOverlayable', () => {
 
 		expect(result).toBe(newOverlayable)
 	})
-
 	it('should merge completions when text has changed', () => {
 		const oldOverlayable = createMockRegisteredOverlayable('hello', [], 100)
 		const newOverlayable = createMockRegisteredOverlayable('hello world', [], 50)
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: ' world', index: 5 }]
-
 		const result = smartMergeCompletionsIntoUpdatedOverlayable(
 			oldOverlayable,
 			newOverlayable,
@@ -155,12 +137,10 @@ describe('smartMergeCompletionsIntoUpdatedOverlayable', () => {
 			index: 11,
 		})
 	})
-
 	it('should handle case when text has not changed', () => {
 		const oldOverlayable = createMockRegisteredOverlayable('hello', [], 100)
 		const newOverlayable = createMockRegisteredOverlayable('hello', [], 50)
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: 'there', index: 5 }]
-
 		const result = smartMergeCompletionsIntoUpdatedOverlayable(oldOverlayable, newOverlayable, completions, 150)
 
 		expect(result.completionsTimestamp).toBe(150)
@@ -172,13 +152,11 @@ describe('smartMergeCompletionsIntoUpdatedOverlayable', () => {
 			index: 5,
 		})
 	})
-
 	it('should concatenate existing completions from newOverlayable', () => {
 		const oldOverlayable = createMockRegisteredOverlayable('hello', [], 100)
 		const existingCompletions: Completion[] = [{ completionType: 'noop' }]
 		const newOverlayable = createMockRegisteredOverlayable('hello world', existingCompletions, 50)
 		const newCompletions: Completion[] = [{ completionType: 'insert', textToInsert: ' world', index: 5 }]
-
 		const result = smartMergeCompletionsIntoUpdatedOverlayable(oldOverlayable, newOverlayable, newCompletions, 150)
 
 		expect(result.completions).toHaveLength(2)
@@ -190,23 +168,19 @@ describe('smartMergeCompletionsIntoUpdatedOverlayable', () => {
 		expect(result.completions[1]).toEqual({ completionType: 'noop' })
 	})
 })
-
 describe('edge cases', () => {
 	it('should handle empty text correctly', () => {
 		const overlayable = createMockRegisteredOverlayable('', [])
 		const change: Partial<OverlayableChangeEvent> = { text: 'new' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		expect(result.text).toBe('new')
 		expect(result.completions).toHaveLength(0)
 	})
-
 	it('should handle completion at the beginning of text', () => {
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: 'hello ', index: 0 }]
 		const overlayable = createMockRegisteredOverlayable('world', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'hello world' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		expect(result.completions).toHaveLength(1)
@@ -216,12 +190,10 @@ describe('edge cases', () => {
 			index: 6,
 		})
 	})
-
 	it('should handle completion at the end of text', () => {
 		const completions: Completion[] = [{ completionType: 'insert', textToInsert: ' world', index: 5 }]
 		const overlayable = createMockRegisteredOverlayable('hello', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'hello world' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		expect(result.completions).toHaveLength(1)
@@ -231,12 +203,10 @@ describe('edge cases', () => {
 			index: 11,
 		})
 	})
-
 	it('should handle replace completion that spans entire text', () => {
 		const completions: Completion[] = [{ completionType: 'replace', textToInsert: 'new', index: 0, endIndex: 5 }]
 		const overlayable = createMockRegisteredOverlayable('hello', completions)
 		const change: Partial<OverlayableChangeEvent> = { text: 'new' }
-
 		const result = smartApplyChanges(overlayable, change)
 
 		expect(result.completions).toHaveLength(1)
